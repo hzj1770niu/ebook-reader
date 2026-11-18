@@ -108,6 +108,7 @@ public class ReaderActivity extends Activity {
     private final List<Integer> flowPageSentenceStart = new ArrayList<>();
     private boolean flowAppending = false;
     private boolean speaking = false;
+    private boolean ocrDirty = false;
     private boolean continuous = false;
     private int pendingSpeak = -1;
     private boolean pendingContinuous;
@@ -254,10 +255,7 @@ public class ReaderActivity extends Activity {
                 }));
         findViewById(R.id.btnPrevPage).setOnClickListener(v -> goPage(pageIndex - 1));
         findViewById(R.id.btnNextPage).setOnClickListener(v -> goPage(pageIndex + 1));
-        btnSpeak.setOnClickListener(v -> {
-            if (speaking) stopSpeak();
-            else startSpeak(flowActive() ? currentPageSentenceStart() : 0, true);
-        });
+        btnSpeak.setOnClickListener(v -> toggleSpeak());
         findViewById(R.id.btnHideBar).setOnClickListener(v -> setBarVisible(false));
 
         seekProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -392,7 +390,7 @@ public class ReaderActivity extends Activity {
                 return;
             }
             final int total = b.pdfPageCount;
-            ui.post(() -> announce("打开好了，正在后台识别，共 " + total + " 页"));
+            ui.post(() -> announce("正在后台识别这本书，识别好了会告诉你"));
             int done = 0;
             for (int p = 1; p <= total; p++) {
                 final Chapter ch = b.pdfPages.get(p);
@@ -411,19 +409,29 @@ public class ReaderActivity extends Activity {
                     continue;
                 }
                 final String tx = text;
-                final int idx = p;
                 final int dn = done;
                 ui.post(() -> {
                     ch.items.clear();
                     ch.addText(tx);
                     ch.pendingOcr = false;
                     b.invalidateBlocks();
-                    if (dn == 1) announce("第 " + idx + " 页识别好了");
-                    if (dn <= 3 || dn % 3 == 0) buildLayout(true);
+                    // 中途不念进度、不在朗读时重排，免得打断正在读的内容
+                    if (!speaking) {
+                        if (dn <= 2) buildLayout(true);
+                        else ocrDirty = true;
+                    } else {
+                        ocrDirty = true;
+                    }
                 });
             }
             final int finalDone = done;
-            ui.post(() -> announce("要识别的页面都做完了，共 " + finalDone + " 页"));
+            ui.post(() -> {
+                if (!speaking) {
+                    buildLayout(true);
+                    ocrDirty = false;
+                }
+                announce("这本书后台识别完了，共 " + finalDone + " 页");
+            });
         }, "reader-ocr");
         t.setPriority(Thread.MIN_PRIORITY);
         t.start();
@@ -457,7 +465,7 @@ public class ReaderActivity extends Activity {
         final int h = contentH;
         final int size = textPx;
 
-        announce("正在排版");
+        if (barVisible && new Prefs(this).layoutHint()) announce("正在排版");
         new Thread(() -> {
             LayoutEngine e = new LayoutEngine(book, style, w, h, size, density, tf);
             e.compute();
@@ -567,6 +575,11 @@ public class ReaderActivity extends Activity {
             tv.setFocusableInTouchMode(true);
             tv.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
             tv.setAccessibilityDelegate(scrollOnlyDelegate());
+            A11y.attach(tv, scrollOnlyDelegate(),
+                    A11y.act(A11y.SPEAK, speaking ? "暂停朗读" : "朗读", this::toggleSpeak),
+                    A11y.act(A11y.ADD_BOOKMARK, "加书签", this::addBookmarkAtCurrent),
+                    A11y.act(A11y.PREV_PAGE, "上一页", this::prevPage),
+                    A11y.act(A11y.NEXT_PAGE, "下一页", this::nextPage));
             contentArea.addView(tv);
             if (outText != null) outText.append(b.text).append('\n');
         }
@@ -1064,6 +1077,12 @@ public class ReaderActivity extends Activity {
         if (wasSpeaking) startSpeak(0, true);
     }
 
+    /** 朗读按钮和转子里的朗读走同一套 */
+    private void toggleSpeak() {
+        if (speaking) stopSpeak();
+        else startSpeak(flowActive() ? currentPageSentenceStart() : 0, true);
+    }
+
     private void nextPage() {
         if (flowActive()) {
             flowScrollScreen(true);
@@ -1419,7 +1438,17 @@ public class ReaderActivity extends Activity {
         }
         ListView lv = new ListView(this);
         lv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(360)));
-        lv.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lines));
+        lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, lines) {
+            @Override
+            public View getView(final int position, View convertView, ViewGroup parent) {
+                View v = super.getView(position, convertView, parent);
+                A11y.attach(v, null, A11y.act(A11y.DELETE_BOOKMARK, "删除这条书签", () -> {
+                    recent.removeBookmark(sourceUri.toString(), marks.get(position).para);
+                    announce("已删除书签");
+                }));
+                return v;
+            }
+        });
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle(marks.isEmpty() ? "还没有书签" : "书签，共 " + marks.size() + " 条")
                 .setView(lv)
@@ -1586,6 +1615,10 @@ public class ReaderActivity extends Activity {
     private void onSpeakFinished() {
         speaking = false;
         updateSpeakButton();
+        if (ocrDirty) {
+            ocrDirty = false;
+            buildLayout(true);
+        }
         if (flowActive() && engine != null) {
             if (!continuous) return;
             if (flowEndPage < engine.pages().size() - 1) {

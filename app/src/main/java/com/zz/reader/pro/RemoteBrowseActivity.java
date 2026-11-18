@@ -77,6 +77,16 @@ public class RemoteBrowseActivity extends Activity {
         load(currentUrl);
     }
 
+    @Override
+    public void onBackPressed() {
+        String parent = parentOf(currentUrl);
+        if (parent != null && !parent.equals(currentUrl)) {
+            load(parent);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private String parentOf(String url) {
         String t = url;
         while (t.endsWith("/")) t = t.substring(0, t.length() - 1);

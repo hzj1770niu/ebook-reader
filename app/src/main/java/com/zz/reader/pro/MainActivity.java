@@ -91,7 +91,20 @@ public class MainActivity extends Activity {
     private void handleIntent(Intent intent) {
         if (intent == null) return;
         Uri data = intent.getData();
+        if (Intent.ACTION_SEND.equals(intent.getAction())) {
+            Uri stream = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            if (stream != null) data = stream;
+        }
         if (data != null) openBook(data, 0);
+    }
+
+    /** 书库里的即时反馈，交给读屏念一句 */
+    private void announce(String text) {
+        if (text == null) return;
+        try {
+            getWindow().getDecorView().announceForAccessibility(text);
+        } catch (Throwable ignore) {
+        }
     }
 
     private void reload() {
@@ -158,7 +171,16 @@ public class MainActivity extends Activity {
         int pad = dp(18);
         box.setPadding(pad, pad, pad, dp(6));
 
-
+        TextView title = new TextView(this);
+        title.setText("设置");
+        title.setTextSize(19);
+        title.getPaint().setFakeBoldText(true);
+        title.setFocusable(true);
+        box.addView(title);
+        final Button back = new Button(this);
+        back.setText("← 返回");
+        back.setMinHeight(dp(48));
+        box.addView(back);
 
         Button about = new Button(this);
         about.setText("关于软件");
@@ -234,11 +256,12 @@ public class MainActivity extends Activity {
         quit.setOnClickListener(v -> confirmQuit());
         box.addView(quit);
 
-        new AlertDialog.Builder(this)
-                .setTitle("设置")
+        AlertDialog settingsDialog = new AlertDialog.Builder(this)
                 .setView(box)
                 .setPositiveButton("关闭", null)
-                .show();
+                .create();
+        back.setOnClickListener(v -> settingsDialog.dismiss());
+        settingsDialog.show();
     }
 
     /** 第一次运行弹一次使用声明；清除数据后再运行会再弹 */
@@ -269,7 +292,10 @@ public class MainActivity extends Activity {
     }
 
     /** 只留当前这一版的更新日志 */
-    private static final String CHANGELOG_NOW = "5.6\n"
+    private static final String CHANGELOG_NOW = "5.7\n"
+            + "支持从别的应用的分享面板选电子书阅读器打开文件\n"
+            + "分享进来的 EPUB、MOBI、AZW3、PDF、TXT、FB2、HTML、RTF、DOCX 直接打开\n"
+            + "5.6\n"
             + "设置首层不再显示版本号，只在关于软件里保留\n"
             + "识别说明改名为软件简介\n"
             + "首页那句支持格式说明挪进软件简介，首页不再重复\n"
@@ -682,6 +708,34 @@ public class MainActivity extends Activity {
                 .show();
     }
 
+    /** 单本移分类，给转子操作用 */
+    private void moveOne(final RecentStore.Item it) {
+        final List<String> cs = cats.list();
+        String[] opts = new String[cs.size() + 2];
+        for (int i = 0; i < cs.size(); i++) opts[i] = cs.get(i);
+        opts[cs.size()] = "新建分类…";
+        opts[cs.size() + 1] = "移到未分类";
+        new AlertDialog.Builder(this)
+                .setTitle("把《" + it.title + "》移到")
+                .setItems(opts, (d, w) -> {
+                    if (w == opts.length - 2) {
+                        askNewCategory(null);
+                        return;
+                    }
+                    if (w == opts.length - 1) {
+                        cats.setCategory(it.uri, "");
+                        reload();
+                        Toast.makeText(this, "已移到未分类", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    cats.setCategory(it.uri, cs.get(w));
+                    reload();
+                    Toast.makeText(this, "已移到分类 " + cs.get(w), Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
     private void pickMoveTarget() {
         if (sel.isEmpty()) {
             Toast.makeText(this, "还没有选中书", Toast.LENGTH_SHORT).show();
@@ -768,6 +822,10 @@ public class MainActivity extends Activity {
                     + (cat.isEmpty() ? "" : "　分类：" + cat);
             boolean picked = selecting && sel.contains(it.uri);
             tv.setText((picked ? "已选中　" : "") + it.title + "\n" + line2);
+            final RecentStore.Item rowItem = it;
+            A11y.attach(row, null,
+                    A11y.act(A11y.MOVE_CATEGORY, "移到分类", () -> moveOne(rowItem)),
+                    A11y.act(A11y.DELETE_BOOK, "从书库删除", () -> confirmRemove(rowItem)));
 
             Bitmap bmp = null;
             if (it.cover != null && !it.cover.isEmpty()) {

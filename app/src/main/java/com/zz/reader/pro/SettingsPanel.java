@@ -104,6 +104,8 @@ public class SettingsPanel {
         header(root, "朗读");
         numberRow(root, "朗读语速", () -> String.format(java.util.Locale.CHINA, "%.1f 倍", s.ttsSpeed),
                 5, 30, 1, () -> Math.round(s.ttsSpeed * 10), v -> s.ttsSpeed = v / 10f);
+        switchRow(root, "改排版时念一句提示", () -> prefs.layoutHint() ? "开启" : "关闭",
+                () -> prefs.setLayoutHint(!prefs.layoutHint()));
         switchRow(root, "打开书自动朗读（同时隐藏工具栏）", () -> s.autoSpeak ? "开启" : "关闭",
                 () -> s.autoSpeak = !s.autoSpeak);
         switchRow(root, "音量键翻页", () -> s.volumeTurn ? "开启" : "关闭",

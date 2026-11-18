@@ -125,6 +125,15 @@ public class Prefs {
         sp.edit().putBoolean("auto_update", v).apply();
     }
 
+    /** 改排版时是否念一句“正在排版”，默认开 */
+    public boolean layoutHint() {
+        return sp.getBoolean("layout_hint", true);
+    }
+
+    public void setLayoutHint(boolean v) {
+        sp.edit().putBoolean("layout_hint", v).apply();
+    }
+
     /** 书库排序：0 按最近打开，1 按名称，2 按加入先后 */
     public int sortMode() {
         return sp.getInt("sort_mode", 0);
