@@ -63,8 +63,14 @@ public class MainActivity extends Activity {
         });
 
         reload();
-        showFirstRunNotice();
+        boolean firstRun = showFirstRunNotice();
+        if (!firstRun) {
+            // 等界面画出来再查，避免拖慢启动
+            new android.os.Handler(android.os.Looper.getMainLooper())
+                    .postDelayed(() -> UpdateChecker.autoCheck(this), 1500);
+        }
         handleIntent(getIntent());
+        maybeAutoCheckUpdate();
         showFirstRunNoticeIfNeeded();
     }
 
@@ -189,14 +195,14 @@ public class MainActivity extends Activity {
     }
 
     /** 第一次运行弹一次使用声明；清除数据后再运行会再弹 */
-    private void showFirstRunNotice() {
+    private boolean showFirstRunNotice() {
         try {
             android.content.SharedPreferences sp =
                     getSharedPreferences("app_notice", MODE_PRIVATE);
-            if (sp.getBoolean("shown", false)) return;
+            if (sp.getBoolean("shown", false)) return false;
             sp.edit().putBoolean("shown", true).apply();
         } catch (Throwable ignore) {
-            return;
+            return false;
         }
         new AlertDialog.Builder(this)
                 .setTitle("使用声明")
@@ -206,6 +212,22 @@ public class MainActivity extends Activity {
                 .setPositiveButton("我已知晓", null)
                 .setCancelable(true)
                 .show();
+        return true;
+    }
+
+    /** 启动时自动检查一次更新（开关关掉就不查；两次之间至少隔 24 小时，连不上不打扰） */
+    private void maybeAutoCheckUpdate() {
+        try {
+            Prefs p = new Prefs(this);
+            if (!p.autoUpdate()) return;
+            long now = System.currentTimeMillis();
+            if (now - p.lastUpdateCheck() < 24L * 3600L * 1000L) return;
+            p.setLastUpdateCheck(now);
+        } catch (Throwable e) {
+            return;
+        }
+        getWindow().getDecorView().postDelayed(
+                () -> UpdateChecker.check(MainActivity.this, true), 2000);
     }
 
     /** 关于软件：作者与两条声明 */
@@ -235,10 +257,20 @@ public class MainActivity extends Activity {
                 + "4.3\n"
                 + "打开与识别彻底分开：书秒开，识别在后台一页一页做，做完自动替换进正文；"
                 + "识别进度用语音提示，失败会说出原因。\n\n"
+                + "4.8\n"
+                + "启动时自动检查一次更新，发现新版本才弹窗；设置里加开关，可以关掉自动检查。\n\n"
+                + "4.8\n"
+                + "启动时自动检查一次更新（六小时内不重复查），发现新版本弹窗说明；"
+                + "设置里新增“启动时自动检查更新”开关，关掉就彻底不联网查。\n\n"
                 + "4.7\n"
                 + "检查更新改为读取发布仓库里的版本清单，能在软件里直接看到版本号、更新说明和下载地址。\n\n"
                 + "4.6\n"
                 + "第一次打开软件时弹一次作者与声明，读屏会念出来。\n\n"
+                + "4.8\n"
+                + "启动时自动检查一次更新，发现新版本才弹窗；设置里加开关，可以关掉自动检查。\n\n"
+                + "4.8\n"
+                + "启动时自动检查一次更新（六小时内不重复查），发现新版本弹窗说明；"
+                + "设置里新增“启动时自动检查更新”开关，关掉就彻底不联网查。\n\n"
                 + "4.7\n"
                 + "检查更新改为读取发布仓库里的版本清单，能在软件里直接看到版本号、更新说明和下载地址。\n\n"
                 + "4.6\n"

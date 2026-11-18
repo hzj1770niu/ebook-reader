@@ -108,8 +108,30 @@ public class Prefs {
         return sp.getString("encoding", "自动检测");
     }
 
+    public boolean autoUpdate() {
+        return sp.getBoolean("auto_update", true);
+    }
+
     public boolean proofOcr() {
         return sp.getBoolean("ocr_proof", false);
+    }
+
+    /** 启动时自动检查更新，默认开 */
+    public boolean autoCheckUpdate() {
+        return sp.getBoolean("auto_update", true);
+    }
+
+    public void setAutoCheckUpdate(boolean v) {
+        sp.edit().putBoolean("auto_update", v).apply();
+    }
+
+    /** 上次检查更新的时间，用来做六小时节流 */
+    public long lastUpdateCheck() {
+        return sp.getLong("last_update_check", 0L);
+    }
+
+    public void setLastUpdateCheck(long t) {
+        sp.edit().putLong("last_update_check", t).apply();
     }
 
     public void setEncodingChoice(String v) {
