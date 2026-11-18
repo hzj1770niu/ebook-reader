@@ -150,13 +150,4 @@
         android:textSize="16sp"
         android:contentDescription="设置" />
 
-    <TextView
-        android:id="@+id/tvVersion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="6dp"
-        android:paddingBottom="10dp"
-        android:text="电子书阅读器 4.2　PDF 双模式·分栏·识别"
-        android:textSize="11sp"
-        android:focusable="true" />
 </LinearLayout>

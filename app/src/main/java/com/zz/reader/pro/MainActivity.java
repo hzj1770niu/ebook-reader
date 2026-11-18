@@ -160,21 +160,9 @@ public class MainActivity extends Activity {
 
         TextView info = new TextView(this);
         info.setTextSize(16);
-        info.setText("电子书阅读器 " + BuildConfig.VERSION_NAME + "\n\n"
-                + "支持格式：EPUB、Kindle 的 MOBI / AZW3 / AZW / PRC、PDF（文字版、扫描版）、"
-                + "TXT、FB2、HTML、RTF、DOCX。\n\n"
-                + "阅读进度、书签、设置都保存在本机，退出不会丢。");
+        info.setText("电子书阅读器 " + BuildConfig.VERSION_NAME);
         box.addView(info);
 
-        TextView ocrNote = new TextView(this);
-        ocrNote.setTextSize(14);
-        ocrNote.setFocusable(true);
-        ocrNote.setPadding(0, dp(10), 0, dp(4));
-        ocrNote.setText("扫描版 PDF 和图片里的字，是在手机本地一个字一个字认出来的，不联网、不上传。"
-                + "认字用的是开源的 PP-OCRv5 模型（PaddleOCR 第五版，中文公开模型里准确率靠前的一套）。"
-                + "为了认得更准，另外加了几道处理：整页颠倒的先转正、倾斜的行先摆平、"
-                + "两栏三栏按一栏读完再读另一栏、整页放大到 1280 像素再找字，小字也能认出来。");
-        box.addView(ocrNote);
 
         Button about = new Button(this);
         about.setText("关于软件");
@@ -285,19 +273,18 @@ public class MainActivity extends Activity {
     }
 
     /** 只留当前这一版的更新日志 */
-    private static final String CHANGELOG_NOW = "5.4\n"
-            + "新增网络书库：SMB 与标准 WebDAV\n"
-            + "设置里新增清除缓存";
+    private static final String CHANGELOG_NOW = "5.5\n"
+            + "删掉首页底部那行硬编码的旧版宣传文字\n"
+            + "设置顶部只留版本号，去掉重复的格式清单\n"
+            + "识别说明合并成一条，去掉重复的罗列\n"
+            + "关于软件去掉与识别说明重复的段落";
 
     /** 关于软件：作者与两条声明 */
     private void showAbout() {
         String text = "电子书阅读器 " + BuildConfig.VERSION_NAME + "\n\n"
                 + "本应用由【站在树上的牛】个人制作使用，禁止出售、向他人收取任何费用，"
                 + "出于方便使用的目的对外分发。\n\n"
-                + "本应用联网仅用于检查软件更新，所有数据仅保存在本机，不会上传到任何服务器。\n\n"
-                + "支持格式：EPUB、Kindle 的 MOBI / AZW3 / AZW / PRC、PDF（文字版、扫描版）、"
-                + "TXT、FB2、HTML、RTF、DOCX。\n\n"
-                + "扫描版 PDF 的识别在手机本地完成，用的是开源 PP-OCRv5 模型（PaddleOCR 第五版）。";
+                + "本应用联网仅用于检查软件更新，所有数据仅保存在本机，不会上传到任何服务器。";
         new AlertDialog.Builder(this)
                 .setTitle("关于软件")
                 .setMessage(text)
@@ -307,20 +294,11 @@ public class MainActivity extends Activity {
 
     /** 识别说明：用的是什么模型、打开书时后台干什么 */
     private void showOcrInfo() {
-        String text = "扫描版 PDF 的文字识别，在手机本地完成，不联网、不上传。\n\n"
-                + "用的是开源模型 PP-OCRv5，也就是 PaddleOCR 的第五代，一共三个：\n"
-                + "一、方向分类：判断整页是不是颠倒或横躺，颠倒的先转正再识别。\n"
-                + "二、文字检测：把整页里每一行文字框出来，倾斜的行先摆正再切图。\n"
-                + "三、文字识别：逐行转成文字，按左栏读完再读右栏的顺序拼回正文。\n\n"
-                + "为了认得更准，检测时把整页放大到长边 1280 再算；两栏三栏自动判断栏数；"
-                + "文字层本身坏掉的页（字体没有对应关系的）也会改用识别结果，并用识别结果校对。\n\n"
-                + "打开一本书的时候：\n"
-                + "一、先立刻把书打开，只读目录和已有文字，不在这里做识别，书是秒开的。\n"
-                + "二、扫描页先放一句“第 N 页正在本地识别”，这些页现在就能翻，不会卡住。\n"
-                + "三、屏幕亮着的时候，后台一页一页往下识别，手机不卡的时候才做，优先级给得很低。\n"
-                + "四、每认完一页就把文字填回那一页，你翻回去看就是识别后的正文，位置不会跳。\n"
-                + "五、有语音进度：“打开好了，正在后台识别，共 N 页”“第 N 页识别好了”“都做完了”。\n"
-                + "六、识别结果按页存下来，下次打开同一本书不用重认。";
+        String text = "扫描版 PDF 的文字在手机本地识别，不联网、不上传。\n\n"
+                + "一、用开源的 PP-OCRv5 模型（PaddleOCR 第五版，中文公开模型里准确率靠前）。\n"
+                + "二、整页颠倒的先转正，倾斜的行先摆平，两栏三栏按一栏读完再读另一栏。\n"
+                + "三、打开书时不做识别，书先秒开；扫描页先放一句提示，后台一页一页补上文字。\n"
+                + "四、识别结果按页存下来，下次打开同一本书不用重认。";
         new AlertDialog.Builder(this)
                 .setTitle("识别说明")
                 .setMessage(text)
