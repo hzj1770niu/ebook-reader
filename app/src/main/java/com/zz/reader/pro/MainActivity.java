@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -166,17 +167,46 @@ public class MainActivity extends Activity {
         about.setOnClickListener(v -> showAbout());
         box.addView(about);
 
+        final Prefs prefs = new Prefs(this);
+
+        CheckBox auto = new CheckBox(this);
+        auto.setText("启动时自动检查更新");
+        auto.setChecked(prefs.autoCheckUpdate());
+        auto.setMinHeight(dp(52));
+        auto.setOnCheckedChangeListener((b, on) -> {
+            prefs.setAutoCheckUpdate(on);
+            Toast.makeText(this, on ? "以后启动会自动检查更新" : "以后启动不再自动检查更新",
+                    Toast.LENGTH_SHORT).show();
+        });
+        box.addView(auto);
+
+        CheckBox addLib = new CheckBox(this);
+        addLib.setText("打开文档时加入书库");
+        addLib.setChecked(prefs.addToLibrary());
+        addLib.setMinHeight(dp(52));
+        addLib.setOnCheckedChangeListener((b, on) -> {
+            prefs.setAddToLibrary(on);
+            Toast.makeText(this, on ? "打开文档会加入书库" : "打开文档只当查看器，不加入书库",
+                    Toast.LENGTH_SHORT).show();
+        });
+        box.addView(addLib);
+
+        TextView addLibNote = new TextView(this);
+        addLibNote.setTextSize(13);
+        addLibNote.setText("关掉以后，从文件管理器打开文档只当查看器用，不写进书库，也不记阅读进度。");
+        addLibNote.setFocusable(true);
+        addLibNote.setPadding(0, 0, 0, dp(8));
+        box.addView(addLibNote);
+
         Button check = new Button(this);
         check.setText("检查更新");
         check.setMinHeight(dp(52));
-        check.setContentDescription("检查更新，联网查有没有新版本");
         check.setOnClickListener(v -> UpdateChecker.check(this));
         box.addView(check);
 
         Button ocrInfo = new Button(this);
         ocrInfo.setText("识别说明");
         ocrInfo.setMinHeight(dp(52));
-        ocrInfo.setContentDescription("识别说明：扫描版 PDF 用的是什么模型，打开书时后台在做什么");
         ocrInfo.setOnClickListener(v -> showOcrInfo());
         box.addView(ocrInfo);
 
@@ -189,7 +219,6 @@ public class MainActivity extends Activity {
         Button quit = new Button(this);
         quit.setText("退出软件");
         quit.setMinHeight(dp(52));
-        quit.setContentDescription("退出软件，会关闭电子书阅读器");
         quit.setOnClickListener(v -> confirmQuit());
         box.addView(quit);
 
@@ -226,6 +255,13 @@ public class MainActivity extends Activity {
                 .show();
         return true;
     }
+
+    /** 只留当前这一版的更新日志 */
+    private static final String CHANGELOG_NOW = "5.2\n"
+            + "去掉各按钮后面多余的解释提示\n"
+            + "更新日志只显示当前这一版\n"
+            + "支持从文件管理器里直接打开 epub、mobi、azw3、pdf、txt、fb2、html、rtf、docx\n"
+            + "设置里新增“打开文档时加入书库”开关，关掉就只当文档查看器";
 
     /** 关于软件：作者与两条声明 */
     private void showAbout() {
@@ -268,73 +304,9 @@ public class MainActivity extends Activity {
 
     /** 更新日志：从 4.0（正式更名为"电子书阅读器"）开始记 */
     private void showChangelog() {
-        String text = "4.0　首个正式版\n"
-                + "软件名改为电子书阅读器，换新图标；加入 PDF 支持，文字版直接读文字层，扫描版在手机本地识别。\n\n"
-                + "4.1\n"
-                + "识别模型换成 PP-OCRv5；加入方向分类，颠倒的页先转正；倾斜的文字行先摆正再识别；"
-                + "两栏三栏按左栏读完再读右栏；文字层坏掉的页自动改用识别结果。\n\n"
-                + "4.2\n"
-                + "修扫描版 PDF 打不开、翻不了页；修每页页号错位；新增文字层校对开关。\n\n"
-                + "4.3\n"
-                + "打开与识别彻底分开：书秒开，识别在后台一页一页做，做完自动替换进正文；"
-                + "识别进度用语音提示，失败会说出原因。\n\n"
-                + "4.8\n"
-                + "启动时自动检查一次更新，发现新版本才弹窗；设置里加开关，可以关掉自动检查。\n\n"
-                + "5.1\n"
-                + "识别整页放大到 1280 像素再找字，小字更准；设置里加了一段识别的说明，写清用的是开源 PP-OCRv5。\n\n"
-                + "5.1\n"
-                + "设置里加识别说明，讲清用的是开源 PP-OCRv5 模型，以及打开书时后台在做什么；"
-                + "检测时把整页放大到长边 1280 再算，小字认得更准。\n\n"
-                + "5.0\n"
-                + "书库支持长按进入多选，可批量删除、批量移到分类、新建分类；书签可以批量删除；"
-                + "首次使用声明只弹一次，按钮改为“确定”。\n\n"
-                + "4.9\n"
-                + "更新清单改用新的地址并加了不走缓存的请求头，刚发布的新版本可以马上被检查到。\n\n"
-                + "4.8\n"
-                + "启动时自动检查一次更新（六小时内不重复查），发现新版本弹窗说明；"
-                + "设置里新增“启动时自动检查更新”开关，关掉就彻底不联网查。\n\n"
-                + "4.7\n"
-                + "检查更新改为读取发布仓库里的版本清单，能在软件里直接看到版本号、更新说明和下载地址。\n\n"
-                + "4.6\n"
-                + "第一次打开软件时弹一次作者与声明，读屏会念出来。\n\n"
-                + "5.1\n"
-                + "识别整页放大到 1280 像素再找字，小字更准；设置里加了一段识别的说明，写清用的是开源 PP-OCRv5。\n\n"
-                + "5.1\n"
-                + "设置里加识别说明，讲清用的是开源 PP-OCRv5 模型，以及打开书时后台在做什么；"
-                + "检测时把整页放大到长边 1280 再算，小字认得更准。\n\n"
-                + "5.0\n"
-                + "书库支持长按进入多选，可批量删除、批量移到分类、新建分类；书签可以批量删除；"
-                + "首次使用声明只弹一次，按钮改为“确定”。\n\n"
-                + "4.9\n"
-                + "更新清单改用新的地址并加了不走缓存的请求头，刚发布的新版本可以马上被检查到。\n\n"
-                + "4.8\n"
-                + "启动时自动检查一次更新，发现新版本才弹窗；设置里加开关，可以关掉自动检查。\n\n"
-                + "5.1\n"
-                + "识别整页放大到 1280 像素再找字，小字更准；设置里加了一段识别的说明，写清用的是开源 PP-OCRv5。\n\n"
-                + "5.1\n"
-                + "设置里加识别说明，讲清用的是开源 PP-OCRv5 模型，以及打开书时后台在做什么；"
-                + "检测时把整页放大到长边 1280 再算，小字认得更准。\n\n"
-                + "5.0\n"
-                + "书库支持长按进入多选，可批量删除、批量移到分类、新建分类；书签可以批量删除；"
-                + "首次使用声明只弹一次，按钮改为“确定”。\n\n"
-                + "4.9\n"
-                + "更新清单改用新的地址并加了不走缓存的请求头，刚发布的新版本可以马上被检查到。\n\n"
-                + "4.8\n"
-                + "启动时自动检查一次更新（六小时内不重复查），发现新版本弹窗说明；"
-                + "设置里新增“启动时自动检查更新”开关，关掉就彻底不联网查。\n\n"
-                + "4.7\n"
-                + "检查更新改为读取发布仓库里的版本清单，能在软件里直接看到版本号、更新说明和下载地址。\n\n"
-                + "4.6\n"
-                + "第一次运行弹一次使用声明，清除数据后再运行会再弹一次。\n\n"
-                + "4.5\n"
-                + "设置里加检查更新与关于软件；关于里写明作者与分发、联网的两条声明；"
-                + "检查更新只查 GitHub 的发布清单，不收集任何数据。\n\n"
-                + "4.4\n"
-                + "退出软件从书库底部挪进设置；Kindle 的 MOBI / AZW3 改为按书里自带的目录分章，"
-                + "目录读不到时才退回按“第 x 章”切；新增这份更新日志。";
         new AlertDialog.Builder(this)
                 .setTitle("更新日志")
-                .setMessage(text)
+                .setMessage(CHANGELOG_NOW)
                 .setPositiveButton("关闭", null)
                 .show();
     }
@@ -389,8 +361,7 @@ public class MainActivity extends Activity {
     private void updateCategoryButton() {
         Button b = findViewById(R.id.btnCategory);
         b.setText(filterCat.isEmpty() ? "全部分类" : "分类：" + filterCat);
-        b.setContentDescription(filterCat.isEmpty() ? "当前显示全部书籍，点开可以按分类筛选"
-                : "当前只显示分类 " + filterCat + "，点开可以换");
+        b.setContentDescription(filterCat.isEmpty() ? "分类" : "分类 " + filterCat);
     }
 
     private void pickCategory() {
@@ -671,8 +642,7 @@ public class MainActivity extends Activity {
             row.setContentDescription(it.title + "，" + it.format + " 格式"
                     + (it.percent > 0 ? "，已读 " + it.percent + "%" : "")
                     + (cat.isEmpty() ? "" : "，分类 " + cat)
-                    + (picked ? "，已选中" : "")
-                    + (selecting ? "。点按选择或取消" : "。长按可以多选删除或移分类"));
+                    + (picked ? "，已选中" : ""));
             return row;
         }
     }

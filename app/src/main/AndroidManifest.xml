@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <queries>
         <intent>
@@ -33,10 +36,50 @@
                 <data android:scheme="file" />
                 <data android:mimeType="application/epub+zip" />
                 <data android:mimeType="application/x-mobipocket-ebook" />
-                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/vnd.amazon.ebook" />
+                <data android:mimeType="application/x-mobi" />
+                <data android:mimeType="application/pdf" />
                 <data android:mimeType="text/plain" />
                 <data android:mimeType="text/html" />
+                <data android:mimeType="application/xhtml+xml" />
                 <data android:mimeType="application/rtf" />
+                <data android:mimeType="text/rtf" />
+                <data android:mimeType="application/x-fictionbook+xml" />
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                <data android:mimeType="application/octet-stream" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.epub" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.mobi" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.azw" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.azw3" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.prc" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.pdf" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.txt" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.fb2" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.fbd" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.html" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.htm" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.xhtml" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.rtf" />
+                <data android:scheme="content" android:host="*" android:pathPattern=".*\\.docx" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.epub" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.mobi" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.azw" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.azw3" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.prc" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.pdf" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.txt" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.fb2" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.fbd" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.html" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.htm" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.xhtml" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.rtf" />
+                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.docx" />
             </intent-filter>
         </activity>
 

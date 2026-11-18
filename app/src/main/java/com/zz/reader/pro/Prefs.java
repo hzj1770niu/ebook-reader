@@ -125,6 +125,15 @@ public class Prefs {
         sp.edit().putBoolean("auto_update", v).apply();
     }
 
+    /** 打开文档时是否写进书库，默认是 */
+    public boolean addToLibrary() {
+        return sp.getBoolean("add_to_library", true);
+    }
+
+    public void setAddToLibrary(boolean v) {
+        sp.edit().putBoolean("add_to_library", v).apply();
+    }
+
     /** 上次检查更新的时间，用来做六小时节流 */
     public long lastUpdateCheck() {
         return sp.getLong("last_update_check", 0L);

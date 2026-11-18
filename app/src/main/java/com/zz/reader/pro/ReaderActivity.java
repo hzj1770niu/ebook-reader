@@ -992,6 +992,7 @@ public class ReaderActivity extends Activity {
         lastTouchSave = now;
         if (book == null || engine == null) return;
         int percent = engine.percentOfPage(pageIndex);
+        if (!new Prefs(this).addToLibrary()) return;
         recent.touch(sourceUri.toString(), book.title, book.format, book.coverPath,
                 currentPara(), percent);
     }

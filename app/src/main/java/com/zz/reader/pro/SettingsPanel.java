@@ -189,7 +189,7 @@ public class SettingsPanel {
         tv.setTextSize(17);
         tv.setTypeface(null, android.graphics.Typeface.BOLD);
         tv.setFocusable(true);
-        tv.setContentDescription(text + "，这一组设置");
+        tv.setContentDescription(text);
         tv.setPadding(0, dp(14), 0, dp(4));
         parent.addView(tv);
     }
@@ -216,14 +216,14 @@ public class SettingsPanel {
         minus.setTextSize(16);
         minus.setMinWidth(dp(62));
         minus.setMinHeight(dp(52));
-        minus.setContentDescription("把" + label + "调小");
+        minus.setContentDescription(label + " 减小");
 
         Button plus = new Button(act);
         plus.setText("＋");
         plus.setTextSize(16);
         plus.setMinWidth(dp(62));
         plus.setMinHeight(dp(52));
-        plus.setContentDescription("把" + label + "调大");
+        plus.setContentDescription(label + " 增大");
 
         minus.setOnClickListener(v -> {
             int nv = Math.max(min, getter.get() - step);
@@ -255,11 +255,11 @@ public class SettingsPanel {
         btn.setTextSize(15);
         btn.setMinHeight(dp(56));
         btn.setText(label + "：" + valueText.get());
-        btn.setContentDescription(label + "，当前 " + valueText.get() + "，点按切换");
+        btn.setContentDescription(label + "，当前 " + valueText.get());
         btn.setOnClickListener(v -> {
             action.run();
             btn.setText(label + "：" + valueText.get());
-            btn.setContentDescription(label + "，当前 " + valueText.get() + "，点按切换");
+            btn.setContentDescription(label + "，当前 " + valueText.get());
             btn.announceForAccessibility(label + " " + valueText.get());
         });
         parent.addView(btn);
