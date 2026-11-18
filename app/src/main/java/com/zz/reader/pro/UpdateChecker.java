@@ -89,7 +89,6 @@ public class UpdateChecker {
                             .setTitle("检查更新")
                             .setMessage("没能连上更新服务器，稍后再试一次。")
                             .setPositiveButton("知道了", null)
-                            .setNeutralButton("去发布页", (d, w) -> openLink(act, RELEASE_PAGE))
                             .show();
                     return;
                 }
@@ -102,7 +101,6 @@ public class UpdateChecker {
                             .setTitle("已经是最新版本")
                             .setMessage("当前 " + BuildConfig.VERSION_NAME + "，服务器上是 " + nn + "。")
                             .setPositiveButton("好", null)
-                            .setNeutralButton("发布页", (d, w) -> openLink(act, RELEASE_PAGE))
                             .show();
                     return;
                 }
@@ -111,12 +109,12 @@ public class UpdateChecker {
                 if (body.isEmpty()) body = "新版本 " + nn + "。";
                 if (body.length() > 900) body = body.substring(0, 900) + "……";
                 final String link = o.optString("apkUrl", "");
+                final String sha = o.optString("sha256", "");
                 new AlertDialog.Builder(act)
                         .setTitle("发现新版本 " + nn)
                         .setMessage("当前 " + BuildConfig.VERSION_NAME + "。\n\n" + body)
-                        .setPositiveButton("去下载", (d, w) -> openLink(act, link))
+                        .setPositiveButton("下载并安装", (d, w) -> UpdateInstaller.start(act, nn, link, sha))
                         .setNegativeButton("以后再说", null)
-                        .setNeutralButton("发布页", (d, w) -> openLink(act, RELEASE_PAGE))
                         .show();
             });
         }).start();

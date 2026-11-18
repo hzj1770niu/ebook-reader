@@ -292,10 +292,11 @@ public class MainActivity extends Activity {
     }
 
     /** 只留当前这一版的更新日志 */
-    private static final String CHANGELOG_NOW = "5.9\n"
-            + "PDF 书名按文档自带的标题来，文件名前面那串数字自动去掉\n"
-            + "工具栏打开、收起、返回时的提示缩短成一句话\n"
-            + "检查更新每次带时间戳，绕过 CDN 缓存，不会再报成旧版本";
+    private static final String CHANGELOG_NOW = "6.0\n"
+            + "检查更新改成应用内下载：显示百分比进度，可以取消\n"
+            + "下载完自动校验指纹，对不上就重下，不会让你装坏包\n"
+            + "校验通过直接弹出系统安装界面，第一次要允许一次安装权限\n"
+            + "更新相关的弹窗去掉“发布页”入口，只留下载与以后再说";
 
     /** 关于软件：作者与两条声明 */
     private void showAbout() {
