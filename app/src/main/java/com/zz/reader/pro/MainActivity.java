@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +64,7 @@ public class MainActivity extends Activity {
         actionBar = findViewById(R.id.actionBar);
         findViewById(R.id.btnCategory).setOnClickListener(v -> pickCategory());
         findViewById(R.id.btnSort).setOnClickListener(v -> pickSort());
+        findViewById(R.id.btnRemote).setOnClickListener(v -> showRemote());
         findViewById(R.id.btnMultiDelete).setOnClickListener(v -> confirmDeleteSelected());
         findViewById(R.id.btnMultiMove).setOnClickListener(v -> pickMoveTarget());
         findViewById(R.id.btnMultiAll).setOnClickListener(v -> selectAll());
@@ -210,6 +213,19 @@ public class MainActivity extends Activity {
         addLibNote.setPadding(0, 0, 0, dp(8));
         box.addView(addLibNote);
 
+        Button clearCache = new Button(this);
+        clearCache.setText("清除缓存");
+        clearCache.setMinHeight(dp(52));
+        clearCache.setOnClickListener(v -> confirmClearCache());
+        box.addView(clearCache);
+
+        TextView clearNote = new TextView(this);
+        clearNote.setTextSize(13);
+        clearNote.setText("从网络书库读的书、从文件管理器打开时留下的副本都放在缓存里，清掉不影响书库里的书。");
+        clearNote.setFocusable(true);
+        clearNote.setPadding(0, 0, 0, dp(8));
+        box.addView(clearNote);
+
         Button check = new Button(this);
         check.setText("检查更新");
         check.setMinHeight(dp(52));
@@ -269,9 +285,9 @@ public class MainActivity extends Activity {
     }
 
     /** 只留当前这一版的更新日志 */
-    private static final String CHANGELOG_NOW = "5.3\n"
-            + "书库上方加排序：按名称、按最近打开、按加入先后\n"
-            + "更新日志按当前版本过滤，只列比当前版本高的那些版本";
+    private static final String CHANGELOG_NOW = "5.4\n"
+            + "新增网络书库：SMB 与标准 WebDAV\n"
+            + "设置里新增清除缓存";
 
     /** 关于软件：作者与两条声明 */
     private void showAbout() {
@@ -378,6 +394,122 @@ public class MainActivity extends Activity {
                     d.dismiss();
                     reload();
                     Toast.makeText(this, "已改为" + opts[w], Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    // ---------------------------------------------------------------- 网络书库
+
+    private void showRemote() {
+        final List<RemoteStore.Server> servers = new RemoteStore(this).list();
+        if (servers.isEmpty()) {
+            addServer();
+            return;
+        }
+        String[] labels = new String[servers.size()];
+        for (int i = 0; i < servers.size(); i++) labels[i] = servers.get(i).label();
+        new AlertDialog.Builder(this)
+                .setTitle("网络书库")
+                .setItems(labels, (d, w) -> openServer(servers.get(w)))
+                .setNeutralButton("添加", (d, w) -> addServer())
+                .setNegativeButton("删除", (d, w) -> removeServer(servers))
+                .setPositiveButton("关闭", null)
+                .show();
+    }
+
+    private void removeServer(final List<RemoteStore.Server> servers) {
+        String[] labels = new String[servers.size()];
+        for (int i = 0; i < servers.size(); i++) labels[i] = servers.get(i).label();
+        new AlertDialog.Builder(this)
+                .setTitle("删除哪个")
+                .setItems(labels, (d, w) -> {
+                    new RemoteStore(this).remove(w);
+                    Toast.makeText(this, "已删除", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private void openServer(RemoteStore.Server s) {
+        Intent i = new Intent(this, RemoteBrowseActivity.class);
+        i.putExtra("type", s.type);
+        i.putExtra("host", s.host);
+        i.putExtra("user", s.user);
+        i.putExtra("pass", s.pass);
+        startActivity(i);
+    }
+
+    private void addServer() {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        int pad = dp(16);
+        box.setPadding(pad, dp(8), pad, dp(4));
+
+        final RadioGroup rg = new RadioGroup(this);
+        RadioButton smb = new RadioButton(this);
+        smb.setId(1001);
+        smb.setText("SMB（Windows 共享、NAS）");
+        RadioButton dav = new RadioButton(this);
+        dav.setId(1002);
+        dav.setText("WebDAV");
+        rg.addView(smb);
+        rg.addView(dav);
+        rg.check(1001);
+        box.addView(rg);
+
+        final EditText host = new EditText(this);
+        host.setHint("SMB：192.168.1.10/共享名　WebDAV：https://域名/目录");
+        host.setSingleLine(false);
+        box.addView(host);
+
+        final EditText user = new EditText(this);
+        user.setHint("用户名，可留空");
+        user.setSingleLine(true);
+        box.addView(user);
+
+        final EditText pass = new EditText(this);
+        pass.setHint("密码，可留空");
+        pass.setSingleLine(true);
+        pass.setInputType(android.text.InputType.TYPE_CLASS_TEXT
+                | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        box.addView(pass);
+
+        TextView tip = new TextView(this);
+        tip.setTextSize(13);
+        tip.setText("地址按服务器本来的样子填。SMB 填到共享名，WebDAV 填到目录，结尾的斜杠可加可不加。");
+        tip.setFocusable(true);
+        box.addView(tip);
+
+        new AlertDialog.Builder(this)
+                .setTitle("添加服务器")
+                .setView(box)
+                .setPositiveButton("保存", (d, w) -> {
+                    String h = host.getText().toString().trim();
+                    if (h.isEmpty()) {
+                        Toast.makeText(this, "地址没填", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    RemoteStore.Server s = new RemoteStore.Server();
+                    s.type = rg.getCheckedRadioButtonId() == 1002 ? 1 : 0;
+                    s.host = h;
+                    s.user = user.getText().toString().trim();
+                    s.pass = pass.getText().toString();
+                    new RemoteStore(this).add(s);
+                    openServer(s);
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private void confirmClearCache() {
+        final long size = CacheStore.size(this);
+        new AlertDialog.Builder(this)
+                .setTitle("清除缓存")
+                .setMessage("现在缓存占 " + CacheStore.human(size) + "。清掉以后网络书库里的书下次打开要重新下载，书库里记录的不会丢。")
+                .setPositiveButton("清除", (d, w) -> {
+                    long freed = CacheStore.clear(this);
+                    Toast.makeText(this, "已清除 " + CacheStore.human(freed), Toast.LENGTH_SHORT).show();
                 })
                 .setNegativeButton("取消", null)
                 .show();

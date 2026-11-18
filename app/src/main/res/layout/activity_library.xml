@@ -72,6 +72,15 @@
             android:contentDescription="排序" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btnRemote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="网络书库"
+        android:textSize="15sp"
+        android:contentDescription="网络书库" />
+
     <TextView
         android:id="@+id/tvEmpty"
         android:layout_width="match_parent"
