@@ -133,6 +133,13 @@
                 android:contentDescription="在整本书里搜索文字" />
 
             <Button
+                android:id="@+id/btnReOcr"
+                style="@style/ToolButton"
+                android:text="重认"
+                android:visibility="gone"
+                android:contentDescription="重新识别这本书的每一页，整本重跑一遍本地识别" />
+
+            <Button
                 android:id="@+id/btnAa"
                 style="@style/ToolButton"
                 android:text="Aa 设置"

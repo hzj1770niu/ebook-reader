@@ -229,6 +229,7 @@ public class ReaderActivity extends Activity {
         findViewById(R.id.btnToc).setOnClickListener(v -> showToc());
         findViewById(R.id.btnBookmark).setOnClickListener(v -> showBookmarks());
         findViewById(R.id.btnSearch).setOnClickListener(v -> showSearch());
+        findViewById(R.id.btnReOcr).setOnClickListener(v -> reOcrBook());
         findViewById(R.id.btnAa).setOnClickListener(v -> SettingsPanel.show(this, style, prefs,
                 new SettingsPanel.Callback() {
                     @Override
@@ -352,6 +353,8 @@ public class ReaderActivity extends Activity {
     }
 
     private void afterBookLoaded() {
+        findViewById(R.id.btnReOcr).setVisibility(
+                book.pdfPath == null ? View.GONE : View.VISIBLE);
         tvBookInfo.setText(book.title + (book.author.isEmpty() ? "" : " · " + book.author)
                 + " · " + book.format + " · " + book.chapters.size() + " 章 · "
                 + formatCount(book.totalChars()) + "字 · " + book.imageCount() + " 张图");
@@ -404,8 +407,16 @@ public class ReaderActivity extends Activity {
                 }
                 if (text == null) text = "";
                 done++;
+                final int p0 = p;
                 if (text.trim().isEmpty()) {
                     ch.pendingOcr = false;
+                    ui.post(() -> {
+                        ch.items.clear();
+                        ch.addText("（第 " + p0 + " 页没有认出文字，可以换个字号或开文字层校对再试）");
+                        b.invalidateBlocks();
+                        if (!speaking) buildLayout(true);
+                        else ocrDirty = true;
+                    });
                     continue;
                 }
                 final String tx = text;
@@ -430,11 +441,39 @@ public class ReaderActivity extends Activity {
                     buildLayout(true);
                     ocrDirty = false;
                 }
+                findViewById(R.id.btnReOcr).setEnabled(true);
                 announce("这本书后台识别完了，共 " + finalDone + " 页");
             });
         }, "reader-ocr");
         t.setPriority(Thread.MIN_PRIORITY);
         t.start();
+    }
+
+    /** 工具栏那个“重认”：把整本 PDF 从头再识别一遍，重排一次，修掉上一次排版留下的截断 */
+    private void reOcrBook() {
+        if (book == null || book.pdfPath == null) {
+            announce("这本书不是 PDF，没有可重新识别的内容");
+            return;
+        }
+        if (ocrStarted) {
+            announce("正在识别中，等这一遍跑完再重认");
+            return;
+        }
+        View b = findViewById(R.id.btnReOcr);
+        b.setEnabled(false);
+        for (int p = 1; p <= book.pdfPageCount; p++) {
+            Chapter ch = book.pdfPages.get(p);
+            if (ch == null) continue;
+            ch.items.clear();
+            ch.pendingOcr = true;
+            ch.addText("（第 " + p + " 页正在本地识别，识别好了会自动出现在这里）");
+        }
+        book.invalidateBlocks();
+        book.needsOcr = true;
+        ocrStarted = false;
+        buildLayout(false);
+        announce("重新识别这本书，从第一页开始");
+        startOcrWorker();
     }
 
     private static String formatCount(int n) {

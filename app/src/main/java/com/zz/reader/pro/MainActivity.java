@@ -292,15 +292,11 @@ public class MainActivity extends Activity {
     }
 
     /** 只留当前这一版的更新日志 */
-    private static final String CHANGELOG_NOW = "5.7\n"
-            + "支持从别的应用的分享面板选电子书阅读器打开文件\n"
-            + "分享进来的 EPUB、MOBI、AZW3、PDF、TXT、FB2、HTML、RTF、DOCX 直接打开\n"
-            + "5.6\n"
-            + "设置首层不再显示版本号，只在关于软件里保留\n"
-            + "识别说明改名为软件简介\n"
-            + "首页那句支持格式说明挪进软件简介，首页不再重复\n"
-            + "软件简介补充阅读、朗读、网络书库的简短说明\n"
-            + "退出软件不再卡在界面上，先回桌面再在后台释放识别内存";
+    private static final String CHANGELOG_NOW = "5.8\n"
+            + "修 PDF 换页漏字：整页文字不再当一整段塞进版面，按行分段，任何字号都排得下\n"
+            + "排版再加一道兜底：任何段落高过一页就按行切开，不会再被切掉\n"
+            + "识别没认出文字的页，明确说是这页没认出，不再停在“正在识别”\n"
+            + "PDF 工具栏新增“重认”，整本重跑一遍本地识别与排版";
 
     /** 关于软件：作者与两条声明 */
     private void showAbout() {

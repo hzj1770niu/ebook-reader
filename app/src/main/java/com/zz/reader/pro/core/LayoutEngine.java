@@ -42,7 +42,7 @@ public class LayoutEngine {
 
     public LayoutEngine(Book book, PageStyle style, int widthPx, int heightPx,
                         int textSizePx, float density, Typeface bodyTypeface) {
-        this.paras = book.blocks();
+        this.paras = new ArrayList<>(book.blocks());
         this.style = style;
         this.width = Math.max(80, widthPx);
         this.height = Math.max(80, heightPx);
@@ -81,8 +81,52 @@ public class LayoutEngine {
         return pages;
     }
 
+    private boolean splitDone = false;
+
+    /**
+     * 一段排出来高过一页的时候，分页只能让它独占一页，超出的字在分页模式里看不到，就是漏字。
+     * 所以先在这里按行把超高的段切成几段，每段都装得下一页，后面的分页就自然接得上。
+     */
+    private void splitOverflow() {
+        if (splitDone) return;
+        splitDone = true;
+        List<Book.Block> out = new ArrayList<>();
+        for (Book.Block b : paras) {
+            if (b.isImage() || b.text == null || b.text.trim().isEmpty()) {
+                out.add(b);
+                continue;
+            }
+            boolean title = isTitle(b.text);
+            TextPaint paint = title ? titlePaint : bodyPaint;
+            CharSequence cs = buildPara(b.text, title, indentPx);
+            StaticLayout sl = new StaticLayout(cs, paint, width,
+                    title ? Layout.Alignment.ALIGN_CENTER : Layout.Alignment.ALIGN_NORMAL,
+                    style.lineMult, 0f, true);
+            int extra = paraSpacingPx + (title ? paraSpacingPx / 2 : 0);
+            if (sl.getHeight() + extra <= height) {
+                out.add(b);
+                continue;
+            }
+            int lineCount = sl.getLineCount();
+            int lineH = Math.max(1, sl.getLineBottom(0) - sl.getLineTop(0));
+            int maxLines = Math.max(1, (height - extra) / lineH);
+            int i = 0;
+            while (i < lineCount) {
+                int end = Math.min(lineCount, i + maxLines);
+                int s0 = sl.getLineStart(i);
+                int e0 = end >= lineCount ? b.text.length() : sl.getLineStart(end);
+                String sub = b.text.substring(s0, e0).trim();
+                if (!sub.isEmpty()) out.add(new Book.Block(b.chapterIndex, b.chapterTitle, sub));
+                i = end;
+            }
+        }
+        paras.clear();
+        paras.addAll(out);
+    }
+
     public void compute() {
         pages.clear();
+        splitOverflow();
         int n = paras.size();
         if (n == 0) {
             Page p = new Page();
