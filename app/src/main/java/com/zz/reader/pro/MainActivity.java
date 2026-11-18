@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,6 +35,11 @@ public class MainActivity extends Activity {
     private ImageStore imageStore;
     private final List<RecentStore.Item> items = new ArrayList<>();
     private BookAdapter adapter;
+    private CategoryStore cats;
+    private LinearLayout actionBar;
+    private String filterCat = "";
+    private boolean selecting = false;
+    private final java.util.LinkedHashSet<String> sel = new java.util.LinkedHashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,17 +57,16 @@ public class MainActivity extends Activity {
 
         findViewById(R.id.btnSettings).setOnClickListener(v -> showSettings());
 
+        cats = new CategoryStore(this);
+        actionBar = findViewById(R.id.actionBar);
+        findViewById(R.id.btnCategory).setOnClickListener(v -> pickCategory());
+        findViewById(R.id.btnMultiDelete).setOnClickListener(v -> confirmDeleteSelected());
+        findViewById(R.id.btnMultiMove).setOnClickListener(v -> pickMoveTarget());
+        findViewById(R.id.btnMultiAll).setOnClickListener(v -> selectAll());
+        findViewById(R.id.btnMultiCancel).setOnClickListener(v -> exitMulti());
+
         adapter = new BookAdapter();
         list.setAdapter(adapter);
-        list.setOnItemClickListener((parent, view, position, id) -> {
-            RecentStore.Item it = items.get(position);
-            openBook(Uri.parse(it.uri), it.para);
-        });
-        list.setOnItemLongClickListener((parent, view, position, id) -> {
-            confirmRemove(items.get(position));
-            return true;
-        });
-
         reload();
         boolean firstRun = showFirstRunNotice();
         if (!firstRun) {
@@ -70,8 +75,6 @@ public class MainActivity extends Activity {
                     .postDelayed(() -> UpdateChecker.autoCheck(this), 1500);
         }
         handleIntent(getIntent());
-        maybeAutoCheckUpdate();
-        showFirstRunNoticeIfNeeded();
     }
 
     @Override
@@ -88,7 +91,9 @@ public class MainActivity extends Activity {
 
     private void reload() {
         items.clear();
-        items.addAll(store.list());
+        for (RecentStore.Item it : store.list()) {
+            if (filterCat.isEmpty() || cats.categoryOf(it.uri).equals(filterCat)) items.add(it);
+        }
         adapter.notifyDataSetChanged();
         boolean isEmpty = items.isEmpty();
         empty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
@@ -178,28 +183,18 @@ public class MainActivity extends Activity {
                 .show();
     }
 
-    /** 第一次打开软件时把作者与声明说一遍，读屏会直接念出来 */
-    private void showFirstRunNoticeIfNeeded() {
-        android.content.SharedPreferences sp =
-                getSharedPreferences("reader_prefs_pro", MODE_PRIVATE);
-        if (sp.getBoolean("first_run_ack", false)) return;
-        new AlertDialog.Builder(this)
-                .setTitle("关于软件")
-                .setMessage("本应用由【站在树上的牛】个人制作使用，禁止出售、向他人收取任何费用，"
-                        + "出于方便使用的目的对外分发。\n\n"
-                        + "本应用联网仅用于检查软件更新，所有数据仅保存在本机，不会上传到任何服务器。")
-                .setCancelable(false)
-                .setPositiveButton("我知道了", (d, w) ->
-                        sp.edit().putBoolean("first_run_ack", true).apply())
-                .show();
-    }
-
     /** 第一次运行弹一次使用声明；清除数据后再运行会再弹 */
     private boolean showFirstRunNotice() {
         try {
             android.content.SharedPreferences sp =
                     getSharedPreferences("app_notice", MODE_PRIVATE);
             if (sp.getBoolean("shown", false)) return false;
+            boolean oldAck = getSharedPreferences("reader_prefs_pro", MODE_PRIVATE)
+                    .getBoolean("first_run_ack", false);
+            if (oldAck) {
+                sp.edit().putBoolean("shown", true).apply();
+                return false;
+            }
             sp.edit().putBoolean("shown", true).apply();
         } catch (Throwable ignore) {
             return false;
@@ -209,25 +204,10 @@ public class MainActivity extends Activity {
                 .setMessage("本应用由【站在树上的牛】个人制作使用，禁止出售、向他人收取任何费用，"
                         + "出于方便使用的目的对外分发。\n\n"
                         + "本应用联网仅用于检查软件更新，所有数据仅保存在本机，不会上传到任何服务器。")
-                .setPositiveButton("我已知晓", null)
+                .setPositiveButton("确定", null)
                 .setCancelable(true)
                 .show();
         return true;
-    }
-
-    /** 启动时自动检查一次更新（开关关掉就不查；两次之间至少隔 24 小时，连不上不打扰） */
-    private void maybeAutoCheckUpdate() {
-        try {
-            Prefs p = new Prefs(this);
-            if (!p.autoUpdate()) return;
-            long now = System.currentTimeMillis();
-            if (now - p.lastUpdateCheck() < 24L * 3600L * 1000L) return;
-            p.setLastUpdateCheck(now);
-        } catch (Throwable e) {
-            return;
-        }
-        getWindow().getDecorView().postDelayed(
-                () -> UpdateChecker.check(MainActivity.this, true), 2000);
     }
 
     /** 关于软件：作者与两条声明 */
@@ -257,10 +237,11 @@ public class MainActivity extends Activity {
                 + "4.3\n"
                 + "打开与识别彻底分开：书秒开，识别在后台一页一页做，做完自动替换进正文；"
                 + "识别进度用语音提示，失败会说出原因。\n\n"
-                + "4.9\n"
-                + "更新清单改用新的地址并加了不走缓存的请求头，刚发布的新版本可以马上被检查到。\n\n"
                 + "4.8\n"
                 + "启动时自动检查一次更新，发现新版本才弹窗；设置里加开关，可以关掉自动检查。\n\n"
+                + "5.0\n"
+                + "书库支持长按进入多选，可批量删除、批量移到分类、新建分类；书签可以批量删除；"
+                + "首次使用声明只弹一次，按钮改为“确定”。\n\n"
                 + "4.9\n"
                 + "更新清单改用新的地址并加了不走缓存的请求头，刚发布的新版本可以马上被检查到。\n\n"
                 + "4.8\n"
@@ -270,10 +251,16 @@ public class MainActivity extends Activity {
                 + "检查更新改为读取发布仓库里的版本清单，能在软件里直接看到版本号、更新说明和下载地址。\n\n"
                 + "4.6\n"
                 + "第一次打开软件时弹一次作者与声明，读屏会念出来。\n\n"
+                + "5.0\n"
+                + "书库支持长按进入多选，可批量删除、批量移到分类、新建分类；书签可以批量删除；"
+                + "首次使用声明只弹一次，按钮改为“确定”。\n\n"
                 + "4.9\n"
                 + "更新清单改用新的地址并加了不走缓存的请求头，刚发布的新版本可以马上被检查到。\n\n"
                 + "4.8\n"
                 + "启动时自动检查一次更新，发现新版本才弹窗；设置里加开关，可以关掉自动检查。\n\n"
+                + "5.0\n"
+                + "书库支持长按进入多选，可批量删除、批量移到分类、新建分类；书签可以批量删除；"
+                + "首次使用声明只弹一次，按钮改为“确定”。\n\n"
                 + "4.9\n"
                 + "更新清单改用新的地址并加了不走缓存的请求头，刚发布的新版本可以马上被检查到。\n\n"
                 + "4.8\n"
@@ -341,6 +328,211 @@ public class MainActivity extends Activity {
         reload();
     }
 
+    // ---------------------------------------------------------------- 分类与多选
+
+    private void updateCategoryButton() {
+        Button b = findViewById(R.id.btnCategory);
+        b.setText(filterCat.isEmpty() ? "全部分类" : "分类：" + filterCat);
+        b.setContentDescription(filterCat.isEmpty() ? "当前显示全部书籍，点开可以按分类筛选"
+                : "当前只显示分类 " + filterCat + "，点开可以换");
+    }
+
+    private void pickCategory() {
+        final List<String> cs = cats.list();
+        String[] opts = new String[cs.size() + 3];
+        opts[0] = "全部书籍";
+        for (int i = 0; i < cs.size(); i++) opts[i + 1] = "分类：" + cs.get(i);
+        opts[cs.size() + 1] = "新建分类…";
+        opts[cs.size() + 2] = "管理分类…";
+        new AlertDialog.Builder(this)
+                .setTitle("分类")
+                .setItems(opts, (d, w) -> {
+                    if (w == 0) {
+                        filterCat = "";
+                        updateCategoryButton();
+                        reload();
+                        Toast.makeText(this, "显示全部书籍", Toast.LENGTH_SHORT).show();
+                    } else if (w == opts.length - 2) {
+                        askNewCategory(null);
+                    } else if (w == opts.length - 1) {
+                        manageCategories();
+                    } else {
+                        filterCat = cs.get(w - 1);
+                        updateCategoryButton();
+                        reload();
+                        Toast.makeText(this, items.isEmpty() ? "分类 " + filterCat + " 里还没有书"
+                                : "分类 " + filterCat + "，共 " + items.size() + " 本",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("关闭", null)
+                .show();
+    }
+
+    /** 新建分类；建完如果有待移动的选中书就移过去 */
+    private void askNewCategory(Runnable after) {
+        EditText et = new EditText(this);
+        et.setHint("分类名称");
+        et.setContentDescription("输入新分类的名称");
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        int pad = dp(16);
+        box.setPadding(pad, dp(6), pad, 0);
+        box.addView(et);
+        new AlertDialog.Builder(this)
+                .setTitle("新建分类")
+                .setView(box)
+                .setPositiveButton("创建", (d, w) -> {
+                    String name = et.getText().toString().trim();
+                    if (name.isEmpty()) {
+                        Toast.makeText(this, "名称是空的，没建", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    cats.add(name);
+                    if (selecting && !sel.isEmpty()) {
+                        final int moved = sel.size();
+                        for (String uri : sel) cats.setCategory(uri, name);
+                        exitMulti();
+                        reload();
+                        Toast.makeText(this, "已新建分类 " + name + "，并把 " + moved + " 本移了进去",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Toast.makeText(this, "已新建分类 " + name, Toast.LENGTH_SHORT).show();
+                    if (after != null) after.run();
+                    else {
+                        filterCat = name;
+                        updateCategoryButton();
+                        reload();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private void manageCategories() {
+        final List<String> cs = cats.list();
+        if (cs.isEmpty()) {
+            Toast.makeText(this, "还没有分类，先新建一个", Toast.LENGTH_SHORT).show();
+            askNewCategory(null);
+            return;
+        }
+        String[] opts = new String[cs.size()];
+        for (int i = 0; i < cs.size(); i++) opts[i] = cs.get(i);
+        new AlertDialog.Builder(this)
+                .setTitle("管理分类，点一个可以删除")
+                .setItems(opts, (d, w) -> {
+                    final String name = cs.get(w);
+                    new AlertDialog.Builder(this)
+                            .setTitle("删除分类 " + name)
+                            .setMessage("分类会删掉，里面的书不会被删，会回到未分类。")
+                            .setPositiveButton("删除", (dd, ww) -> {
+                                cats.removeCategory(name);
+                                if (filterCat.equals(name)) filterCat = "";
+                                updateCategoryButton();
+                                reload();
+                                Toast.makeText(this, "已删除分类 " + name, Toast.LENGTH_SHORT).show();
+                            })
+                            .setNegativeButton("取消", null)
+                            .show();
+                })
+                .setNegativeButton("关闭", null)
+                .show();
+    }
+
+    private void enterMulti(String uri) {
+        selecting = true;
+        sel.clear();
+        sel.add(uri);
+        actionBar.setVisibility(View.VISIBLE);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "已进入多选，选了 1 本。点按可以加选或取消，下边有删除和分类",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void toggleSelect(String uri) {
+        if (sel.contains(uri)) sel.remove(uri);
+        else sel.add(uri);
+        if (sel.isEmpty()) {
+            exitMulti();
+            return;
+        }
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "已选 " + sel.size() + " 本", Toast.LENGTH_SHORT).show();
+    }
+
+    private void exitMulti() {
+        selecting = false;
+        sel.clear();
+        actionBar.setVisibility(View.GONE);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "已退出多选", Toast.LENGTH_SHORT).show();
+    }
+
+    private void selectAll() {
+        sel.clear();
+        for (RecentStore.Item it : items) sel.add(it.uri);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "已全选 " + sel.size() + " 本", Toast.LENGTH_SHORT).show();
+    }
+
+    private void confirmDeleteSelected() {
+        if (sel.isEmpty()) {
+            Toast.makeText(this, "还没有选中书", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final int n = sel.size();
+        new AlertDialog.Builder(this)
+                .setTitle("删除选中的 " + n + " 本")
+                .setMessage("只是从书架移除记录，手机里的书文件不会被删。")
+                .setPositiveButton("删除", (d, w) -> {
+                    for (String uri : sel) {
+                        store.remove(uri);
+                        cats.setCategory(uri, "");
+                    }
+                    exitMulti();
+                    reload();
+                    Toast.makeText(this, "已从书架移除 " + n + " 本", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private void pickMoveTarget() {
+        if (sel.isEmpty()) {
+            Toast.makeText(this, "还没有选中书", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final List<String> cs = cats.list();
+        String[] opts = new String[cs.size() + 2];
+        for (int i = 0; i < cs.size(); i++) opts[i] = cs.get(i);
+        opts[cs.size()] = "新建分类…";
+        opts[cs.size() + 1] = "移到未分类";
+        new AlertDialog.Builder(this)
+                .setTitle("把选中的 " + sel.size() + " 本移到")
+                .setItems(opts, (d, w) -> {
+                    if (w == opts.length - 2) {
+                        askNewCategory(null);
+                        return;
+                    }
+                    if (w == opts.length - 1) {
+                        for (String uri : sel) cats.setCategory(uri, "");
+                        exitMulti();
+                        reload();
+                        Toast.makeText(this, "已移到未分类", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    final String name = cs.get(w);
+                    for (String uri : sel) cats.setCategory(uri, name);
+                    exitMulti();
+                    reload();
+                    Toast.makeText(this, "已移到分类 " + name + "，共 " + cs.size() + " 个分类可用",
+                            Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
     private class BookAdapter extends BaseAdapter {
 
         @Override
@@ -387,8 +579,11 @@ public class MainActivity extends Activity {
                 row.addView(tv);
             }
             RecentStore.Item it = items.get(position);
-            String line2 = it.format + (it.percent > 0 ? "　已读 " + it.percent + "%" : "");
-            tv.setText(it.title + "\n" + line2);
+            String cat = cats.categoryOf(it.uri);
+            String line2 = it.format + (it.percent > 0 ? "　已读 " + it.percent + "%" : "")
+                    + (cat.isEmpty() ? "" : "　分类：" + cat);
+            boolean picked = selecting && sel.contains(it.uri);
+            tv.setText((picked ? "已选中　" : "") + it.title + "\n" + line2);
 
             Bitmap bmp = null;
             if (it.cover != null && !it.cover.isEmpty()) {
@@ -402,10 +597,26 @@ public class MainActivity extends Activity {
                 iv.setVisibility(View.GONE);
             }
             row.setClickable(true);
-            row.setOnClickListener(v -> openBook(Uri.parse(it.uri), it.para));
+            row.setOnClickListener(v -> {
+                if (selecting) {
+                    toggleSelect(it.uri);
+                } else {
+                    openBook(Uri.parse(it.uri), it.para);
+                }
+            });
+            row.setOnLongClickListener(v -> {
+                if (selecting) {
+                    toggleSelect(it.uri);
+                } else {
+                    enterMulti(it.uri);
+                }
+                return true;
+            });
             row.setContentDescription(it.title + "，" + it.format + " 格式"
                     + (it.percent > 0 ? "，已读 " + it.percent + "%" : "")
-                    + "。长按可以移除这条记录");
+                    + (cat.isEmpty() ? "" : "，分类 " + cat)
+                    + (picked ? "，已选中" : "")
+                    + (selecting ? "。点按选择或取消" : "。长按可以多选删除或移分类"));
             return row;
         }
     }

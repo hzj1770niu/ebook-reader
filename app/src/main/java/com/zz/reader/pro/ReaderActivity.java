@@ -1423,6 +1423,7 @@ public class ReaderActivity extends Activity {
                 .setTitle(marks.isEmpty() ? "还没有书签" : "书签，共 " + marks.size() + " 条")
                 .setView(lv)
                 .setNegativeButton("关闭", null)
+                .setNeutralButton("批量删除", (d, w) -> bulkDeleteBookmarks(marks))
                 .setPositiveButton("加书签", (d, w) -> addBookmarkAtCurrent());
         AlertDialog dialog = builder.create();
         lv.setOnItemClickListener((parent, view, position, id) -> {
@@ -1444,6 +1445,36 @@ public class ReaderActivity extends Activity {
             return true;
         });
         dialog.show();
+    }
+
+    /** 书签批量删除：勾选要删的，一次删掉 */
+    private void bulkDeleteBookmarks(final List<RecentStore.Bookmark> marks) {
+        if (marks.isEmpty()) {
+            announce("还没有书签");
+            return;
+        }
+        final String[] labels = new String[marks.size()];
+        for (int i = 0; i < marks.size(); i++) {
+            RecentStore.Bookmark b = marks.get(i);
+            labels[i] = (b.chapter.isEmpty() ? "第 " + (b.page + 1) + " 页" : b.chapter)
+                    + (b.text.isEmpty() ? "" : "：" + b.text);
+        }
+        final boolean[] checked = new boolean[marks.size()];
+        new AlertDialog.Builder(this)
+                .setTitle("勾选要删除的书签")
+                .setMultiChoiceItems(labels, checked, (d, which, isChecked) -> checked[which] = isChecked)
+                .setPositiveButton("删除选中", (d, w) -> {
+                    int n = 0;
+                    for (int i = 0; i < marks.size(); i++) {
+                        if (checked[i]) {
+                            recent.removeBookmark(sourceUri.toString(), marks.get(i).para);
+                            n++;
+                        }
+                    }
+                    announce(n == 0 ? "没有勾选任何书签" : "已删除 " + n + " 条书签");
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 
     private void addBookmarkAtCurrent() {

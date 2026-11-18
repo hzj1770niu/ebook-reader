@@ -46,6 +46,15 @@
         android:paddingTop="16dp"
         android:paddingBottom="4dp" />
 
+    <Button
+        android:id="@+id/btnCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="全部分类"
+        android:textSize="15sp"
+        android:contentDescription="选择书库分类" />
+
     <TextView
         android:id="@+id/tvEmpty"
         android:layout_width="match_parent"
@@ -61,6 +70,50 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="@null" />
+
+    <LinearLayout
+        android:id="@+id/actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btnMultiDelete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="50dp"
+            android:text="删除"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btnMultiMove"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="50dp"
+            android:text="分类"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btnMultiAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="50dp"
+            android:text="全选"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btnMultiCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="50dp"
+            android:text="取消"
+            android:textSize="15sp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnSettings"
