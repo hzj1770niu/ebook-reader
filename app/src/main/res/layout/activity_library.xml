@@ -17,16 +17,6 @@
         android:focusable="true"
         android:contentDescription="电子书阅读器" />
 
-    <TextView
-        android:id="@+id/tvSupported"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/supported"
-        android:textSize="13sp"
-        android:focusable="true"
-        android:paddingTop="6dp"
-        android:paddingBottom="10dp" />
-
     <Button
         android:id="@+id/btnOpen"
         android:layout_width="match_parent"

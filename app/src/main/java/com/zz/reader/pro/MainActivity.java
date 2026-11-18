@@ -158,10 +158,6 @@ public class MainActivity extends Activity {
         int pad = dp(18);
         box.setPadding(pad, pad, pad, dp(6));
 
-        TextView info = new TextView(this);
-        info.setTextSize(16);
-        info.setText("电子书阅读器 " + BuildConfig.VERSION_NAME);
-        box.addView(info);
 
 
         Button about = new Button(this);
@@ -221,9 +217,9 @@ public class MainActivity extends Activity {
         box.addView(check);
 
         Button ocrInfo = new Button(this);
-        ocrInfo.setText("识别说明");
+        ocrInfo.setText("软件简介");
         ocrInfo.setMinHeight(dp(52));
-        ocrInfo.setOnClickListener(v -> showOcrInfo());
+        ocrInfo.setOnClickListener(v -> showIntro());
         box.addView(ocrInfo);
 
         Button log = new Button(this);
@@ -273,11 +269,12 @@ public class MainActivity extends Activity {
     }
 
     /** 只留当前这一版的更新日志 */
-    private static final String CHANGELOG_NOW = "5.5\n"
-            + "删掉首页底部那行硬编码的旧版宣传文字\n"
-            + "设置顶部只留版本号，去掉重复的格式清单\n"
-            + "识别说明合并成一条，去掉重复的罗列\n"
-            + "关于软件去掉与识别说明重复的段落";
+    private static final String CHANGELOG_NOW = "5.6\n"
+            + "设置首层不再显示版本号，只在关于软件里保留\n"
+            + "识别说明改名为软件简介\n"
+            + "首页那句支持格式说明挪进软件简介，首页不再重复\n"
+            + "软件简介补充阅读、朗读、网络书库的简短说明\n"
+            + "退出软件不再卡在界面上，先回桌面再在后台释放识别内存";
 
     /** 关于软件：作者与两条声明 */
     private void showAbout() {
@@ -292,15 +289,23 @@ public class MainActivity extends Activity {
                 .show();
     }
 
-    /** 识别说明：用的是什么模型、打开书时后台干什么 */
-    private void showOcrInfo() {
-        String text = "扫描版 PDF 的文字在手机本地识别，不联网、不上传。\n\n"
-                + "一、用开源的 PP-OCRv5 模型（PaddleOCR 第五版，中文公开模型里准确率靠前）。\n"
-                + "二、整页颠倒的先转正，倾斜的行先摆平，两栏三栏按一栏读完再读另一栏。\n"
-                + "三、打开书时不做识别，书先秒开；扫描页先放一句提示，后台一页一页补上文字。\n"
-                + "四、识别结果按页存下来，下次打开同一本书不用重认。";
+    /** 软件简介：支持格式、怎么读、怎么听、识别与网络书库，都收在这一处 */
+    private void showIntro() {
+        String text = "支持格式\n"
+                + "EPUB、Kindle 的 MOBI / AZW3 / AZW / PRC、PDF（文字版与扫描版）、"
+                + "TXT、FB2、HTML、RTF、DOCX。TXT 自动识别编码，不乱码。\n\n"
+                + "阅读\n"
+                + "左右点按可以翻页，也可以单指滑动、双指滑动；分页与连续滚动在阅读界面的设置里切。\n\n"
+                + "朗读\n"
+                + "可以用读屏的连续朗读，也可以调系统语音引擎，阅读工具栏里有朗读按钮。\n\n"
+                + "扫描版 PDF\n"
+                + "文字在手机本地识别，不联网、不上传，用开源的 PP-OCRv5 模型。"
+                + "颠倒的页先转正，倾斜的行先摆平，两栏三栏按栏拼回。"
+                + "打开书时不做识别，书先秒开，后台一页一页补文字，结果按页存下来，下次不用重认。\n\n"
+                + "网络书库\n"
+                + "支持 SMB 与标准 WebDAV。读回来的文件放在缓存里，设置里可以清除缓存。";
         new AlertDialog.Builder(this)
-                .setTitle("识别说明")
+                .setTitle("软件简介")
                 .setMessage(text)
                 .setPositiveButton("关闭", null)
                 .show();
@@ -311,17 +316,32 @@ public class MainActivity extends Activity {
         UpdateChecker.showChangelog(this);
     }
 
+    /** 退出软件：界面先撤掉回桌面，后台再释放识别占的内存，最后结束进程 */
+    private void quitNow() {
+        for (android.app.Dialog dlg : openDialogs) {
+            try { dlg.dismiss(); } catch (Throwable ignore) {}
+        }
+        openDialogs.clear();
+        finishAffinity();
+        new Thread(() -> {
+            try { Thread.sleep(250); } catch (InterruptedException ignore) {}
+            try { com.zz.reader.pro.core.OcrEngine.shutdown(); } catch (Throwable ignore) {}
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }, "quit").start();
+    }
+
     /** 退出软件：先确认一次，确认后结束所有界面并结束进程 */
+    private final java.util.List<android.app.Dialog> openDialogs = new java.util.ArrayList<>();
+
     private void confirmQuit() {
-        new AlertDialog.Builder(this)
+        AlertDialog quitDialog = new AlertDialog.Builder(this)
                 .setTitle("退出电子书阅读器")
                 .setMessage("确定退出电子书阅读器吗？阅读进度已经保存。")
-                .setPositiveButton("退出", (d, w) -> {
-                    finishAffinity();
-                    android.os.Process.killProcess(android.os.Process.myPid());
-                })
+                .setPositiveButton("退出", (d, w) -> quitNow())
                 .setNegativeButton("取消", null)
-                .show();
+                .create();
+        openDialogs.add(quitDialog);
+        quitDialog.show();
     }
 
     private void confirmRemove(RecentStore.Item it) {

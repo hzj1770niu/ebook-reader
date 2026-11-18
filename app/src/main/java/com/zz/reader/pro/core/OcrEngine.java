@@ -36,6 +36,18 @@ public class OcrEngine {
     /** 最近一次识别失败的原因，界面上要能看到，不能悄悄失败 */
     public static volatile String lastError;
 
+    /** 退出软件时把本地识别占的内存放掉，进程回收才快 */
+    public static synchronized void shutdown() {
+        OcrEngine e = inst;
+        inst = null;
+        if (e == null) return;
+        try { e.det.close(); } catch (Throwable ignore) {}
+        try { e.cls.close(); } catch (Throwable ignore) {}
+        try { e.rec.close(); } catch (Throwable ignore) {}
+        try { e.closeRenderer(); } catch (Throwable ignore) {}
+        try { e.env.close(); } catch (Throwable ignore) {}
+    }
+
     public static synchronized OcrEngine get() throws Exception {
         if (inst == null) inst = new OcrEngine();
         return inst;
