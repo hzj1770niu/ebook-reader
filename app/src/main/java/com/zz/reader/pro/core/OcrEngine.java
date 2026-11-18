@@ -163,53 +163,64 @@ public class OcrEngine {
 
         final int pageW = src.getWidth();
 
-        // 2) 分栏：按中心横坐标聚类，找出栏与栏之间的大空隙
-        List<Float> xs = new ArrayList<>();
-        for (Box b : boxes) xs.add(b.cx);
-        Collections.sort(xs);
-        List<Float> breaks = new ArrayList<>();
-        for (int i = 1; i < xs.size(); i++) {
-            float gap = xs.get(i) - xs.get(i - 1);
-            if (gap > pageW * 0.10f) breaks.add((xs.get(i) + xs.get(i - 1)) / 2f);
+        // 2) 分栏：按整页横向投影找真栏边界。
+        // 以前是看"相邻两块的横坐标差多少"，同栏里一长一短的行就会误报，断点一多干脆全丢，
+        // 结果左右栏交织着拼，句子断成几截。
+        final int[] col = new int[boxes.size()];
+        {
+            float[] lf = new float[boxes.size()];
+            float[] rt = new float[boxes.size()];
+            for (int i = 0; i < boxes.size(); i++) {
+                Box b = boxes.get(i);
+                lf[i] = b.cx - b.w / 2f;
+                rt[i] = b.cx + b.w / 2f;
+            }
+            int[] c = ColumnSplit.group(lf, rt, pageW, 4);
+            System.arraycopy(c, 0, col, 0, c.length);
         }
-        if (breaks.size() > 2) breaks.clear();
-
-        final List<Float> cols = breaks;
-        Collections.sort(boxes, new Comparator<Box>() {
+        final List<Box> order = boxes;
+        Integer[] idx = new Integer[order.size()];
+        for (int i = 0; i < idx.length; i++) idx[i] = i;
+        java.util.Arrays.sort(idx, new Comparator<Integer>() {
             @Override
-            public int compare(Box a, Box b) {
-                int ca = colIndex(a.cx, cols), cb = colIndex(b.cx, cols);
-                if (ca != cb) return ca < cb ? -1 : 1;
-                return a.cy < b.cy ? -1 : (a.cy == b.cy ? 0 : 1);
+            public int compare(Integer ia, Integer ib) {
+                if (col[ia] != col[ib]) return col[ia] < col[ib] ? -1 : 1;
+                Box a = order.get(ia);
+                Box b = order.get(ib);
+                if (a.cy != b.cy) return a.cy < b.cy ? -1 : 1;
+                return a.cx < b.cx ? -1 : (a.cx == b.cx ? 0 : 1);
             }
         });
+        List<Box> sorted = new ArrayList<>(order.size());
+        int[] colSorted = new int[idx.length];
+        for (int i = 0; i < idx.length; i++) {
+            sorted.add(order.get(idx[i]));
+            colSorted[i] = col[idx[i]];
+        }
+        boxes = sorted;
+        final int[] colOfBox = colSorted;
 
         // 3) 逐块摆正后识别，栏内按行拼接
         StringBuilder out = new StringBuilder();
         int lastCol = -1;
         float lastY = -1e9f;
         float lastH = 20;
-        for (Box b : boxes) {
+        for (int bi = 0; bi < boxes.size(); bi++) {
+            Box b = boxes.get(bi);
             String t = recognizeBox(src, b);
             if (t == null || t.trim().isEmpty()) continue;
-            int col = colIndex(b.cx, cols);
-            boolean newLine = lastCol != col || b.cy - lastY > lastH * 0.9f;
+            int c = colOfBox[bi];
+            boolean newLine = lastCol != c || b.cy - lastY > lastH * 0.9f;
             if (newLine) {
                 if (out.length() > 0) out.append('\n');
             }
             out.append(t.trim());
-            lastCol = col;
+            lastCol = c;
             lastY = b.cy;
             lastH = Math.max(12, b.h);
         }
         if (rotated && !src.isRecycled()) src.recycle();
         return out.toString();
-    }
-
-    private static int colIndex(float cx, List<Float> breaks) {
-        int idx = 0;
-        for (Float b : breaks) if (cx > b) idx++;
-        return idx;
     }
 
     // ---------------- 检测 ----------------

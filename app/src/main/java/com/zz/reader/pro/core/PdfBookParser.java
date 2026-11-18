@@ -36,7 +36,8 @@ import java.util.List;
 public class PdfBookParser implements BookParser {
 
     /** 一页文字少于这个字数，就当没有文字层 */
-    private static final int SCAN_PAGE_CHARS = 25;
+    /** 文字层少于这么多字，基本等于这页没有可读文字（整页图、水印） */
+    private static final int MIN_TEXT_LAYER_CHARS = 12;
     /** 文字层里认不出的字符占到这么多，这一页就改用识别结果 */
     private static final float BROKEN_RATIO = 0.08f;
 
@@ -167,12 +168,12 @@ public class PdfBookParser implements BookParser {
                 } catch (Throwable ignore) {
                 }
                 final PDPage pageObj = pg;
-                addPageImages(pageObj, c, i + 1, images, mediaDir);
+                boolean fullPageImage = addPageImages(pageObj, c, i + 1, images, mediaDir);
                 if (cached) {
                     String t = readFile(cache);
                     if (!t.trim().isEmpty()) c.addText(t);
                     c.pendingOcr = false;
-                } else if (pageLines.isEmpty() || looksBroken(raw)) {
+                } else if (pageLines.isEmpty() || looksBroken(raw, fullPageImage)) {
                     c.addText("（第 " + (i + 1) + " 页正在本地识别，识别好了会自动出现在这里）");
                     c.pendingOcr = true;
                     pending++;
@@ -204,10 +205,24 @@ public class PdfBookParser implements BookParser {
 
     // ---------------- 页内排版 ----------------
 
-    /** 这一页是不是没有可用的文字层 */
-    private static boolean looksBroken(String text) {
+    /**
+     * 这一页的文字层能不能用。
+     * 以前只要字数少于 25 就当扫描页丢掉——图文混排的页（一段文字配一张大图）
+     * 就这么被整页扔给识别，识别再漏几句，就成了漏字。
+     * 现在只按"几乎没有文字"和"乱码比例"判断。
+     */
+    private static boolean looksBroken(String text, boolean hasFullPageImage) {
         if (text == null) return true;
-        if (text.trim().length() < SCAN_PAGE_CHARS) return true;
+        String t = text.trim();
+        if (t.isEmpty()) return true;
+        int rough = 0;
+        for (int i = 0; i < t.length(); i++) {
+            char ch = t.charAt(i);
+            if (ch == '\n' || ch == ' ' || ch == '\t') continue;
+            rough++;
+        }
+        if (rough < MIN_TEXT_LAYER_CHARS) return true;
+        if (hasFullPageImage && rough < MIN_TEXT_LAYER_CHARS * 4) return true;
         int bad = 0, total = 0;
         for (int i = 0; i < text.length(); i++) {
             char ch = text.charAt(i);
@@ -239,41 +254,36 @@ public class PdfBookParser implements BookParser {
         for (Line l : lines) if (l.x + l.width > maxRight) maxRight = l.x + l.width;
         float pageW = Math.max(1f, maxRight);
 
-        List<Float> xs = new ArrayList<>();
-        for (Line l : lines) xs.add(l.x);
-        Collections.sort(xs);
-        List<Float> breaks = new ArrayList<>();
-        for (int i = 1; i < xs.size(); i++) {
-            float gap = xs.get(i) - xs.get(i - 1);
-            if (gap > pageW * 0.12f) breaks.add((xs.get(i) + xs.get(i - 1)) / 2f);
+        // 按整页横向投影找真栏边界，最多四栏。行首参差不齐不会再被误当成栏
+        int n = lines.size();
+        float[] left = new float[n];
+        float[] right = new float[n];
+        for (int i = 0; i < n; i++) {
+            Line l = lines.get(i);
+            left[i] = l.x;
+            right[i] = Math.max(l.x + 1f, l.x + l.width);
         }
-        if (breaks.size() > 2) breaks.clear();
-
-        final List<Float> cols = breaks;
-        Collections.sort(lines, new Comparator<Line>() {
+        final int[] col = ColumnSplit.group(left, right, pageW, 4);
+        Integer[] idx = new Integer[n];
+        for (int i = 0; i < n; i++) idx[i] = i;
+        final List<Line> src = lines;
+        java.util.Arrays.sort(idx, new Comparator<Integer>() {
             @Override
-            public int compare(Line a, Line b) {
-                int ca = colIndex(a.x, cols), cb = colIndex(b.x, cols);
-                if (ca != cb) return ca < cb ? -1 : 1;
-                return a.y < b.y ? -1 : (a.y == b.y ? 0 : 1);
+            public int compare(Integer ia, Integer ib) {
+                if (col[ia] != col[ib]) return col[ia] < col[ib] ? -1 : 1;
+                Line a = src.get(ia);
+                Line b = src.get(ib);
+                if (a.y != b.y) return a.y < b.y ? -1 : 1;
+                return a.x < b.x ? -1 : (a.x == b.x ? 0 : 1);
             }
         });
 
         StringBuilder sb = new StringBuilder();
-        int lastCol = -1;
-        for (Line l : lines) {
-            int col = colIndex(l.x, cols);
+        for (Integer i : idx) {
             if (sb.length() > 0) sb.append('\n');
-            sb.append(l.text);
-            lastCol = col;
+            sb.append(src.get(i).text);
         }
         return sb.toString();
-    }
-
-    private static int colIndex(float x, List<Float> breaks) {
-        int idx = 0;
-        for (Float b : breaks) if (x > b) idx++;
-        return idx;
     }
 
     /** 读 PDF 书签，算出每章起始页 */
@@ -366,9 +376,10 @@ public class PdfBookParser implements BookParser {
      * 把这一页里内嵌的插图取出来，保存成图片文件，插在本页文字后面。
      * 整页扫描图（就是这页本身）不算插图，跳过去，否则每页一张大图，书就没法读了。
      */
-    private static void addPageImages(PDPage page, Chapter ch, int pageNo,
-                                      ImageStore images, File mediaDir) {
-        if (page == null || ch == null || images == null || mediaDir == null) return;
+    private static boolean addPageImages(PDPage page, Chapter ch, int pageNo,
+                                         ImageStore images, File mediaDir) {
+        boolean hasFullPageImage = false;
+        if (page == null || ch == null || images == null || mediaDir == null) return false;
         // 这一页的插图以前取过，直接按索引挂上，省掉重新解码
         File idxFile = new File(new File(mediaDir, "pdfimg"), "p" + pageNo + ".idx");
         if (idxFile.isFile() && idxFile.length() > 0) {
@@ -385,15 +396,15 @@ public class PdfBookParser implements BookParser {
                 br.close();
             } catch (Throwable ignore) {
             }
-            return;
+            return false;
         }
         StringBuilder idx = new StringBuilder();
         try {
             PDResources res = page.getResources();
-            if (res == null) return;
+            if (res == null) return false;
             float pw = page.getMediaBox().getWidth();
             float ph = page.getMediaBox().getHeight();
-            if (pw <= 0 || ph <= 0) return;
+            if (pw <= 0 || ph <= 0) return false;
             float pageRatio = pw / ph;
             int taken = 0;
             for (COSName name : res.getXObjectNames()) {
@@ -415,7 +426,10 @@ public class PdfBookParser implements BookParser {
                 boolean fullPage = (long) w * h > 1500000L
                         && (Math.abs(imgRatio - pageRatio) < 0.12f
                         || Math.abs(imgRatio - 1f / pageRatio) < 0.12f);
-                if (fullPage) continue;
+                if (fullPage) {
+                    hasFullPageImage = true;
+                    continue;
+                }
                 Bitmap bmp = null;
                 try {
                     bmp = img.getImage();
@@ -452,6 +466,7 @@ public class PdfBookParser implements BookParser {
             } catch (Throwable ignore) {
             }
         }
+        return hasFullPageImage;
     }
 
     private static void report(String msg) {
