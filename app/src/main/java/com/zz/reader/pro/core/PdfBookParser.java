@@ -121,6 +121,7 @@ public class PdfBookParser implements BookParser {
             book.title = pdfTitle(doc, file);
             book.pdfPath = file.getAbsolutePath();
             book.pdfPageCount = pageCount;
+            book.mediaDir = mediaDir;
 
             // 1) 一次解析，收集每页每一行的位置
             LineStripper ls = new LineStripper(doc);
@@ -139,6 +140,7 @@ public class PdfBookParser implements BookParser {
             // 3) 逐页定内容：能直接用文字层的先用，其余先放占位，识别交给打开之后做
             File ocrDir = new File(mediaDir, "ocr");
             if (!ocrDir.exists()) ocrDir.mkdirs();
+            book.ocrDir = ocrDir;
 
             int pending = 0;
             for (int i = 0; i < pageCount; i++) {
@@ -367,6 +369,25 @@ public class PdfBookParser implements BookParser {
     private static void addPageImages(PDPage page, Chapter ch, int pageNo,
                                       ImageStore images, File mediaDir) {
         if (page == null || ch == null || images == null || mediaDir == null) return;
+        // 这一页的插图以前取过，直接按索引挂上，省掉重新解码
+        File idxFile = new File(new File(mediaDir, "pdfimg"), "p" + pageNo + ".idx");
+        if (idxFile.isFile() && idxFile.length() > 0) {
+            try {
+                java.io.BufferedReader br = new java.io.BufferedReader(
+                        new java.io.InputStreamReader(new java.io.FileInputStream(idxFile), "UTF-8"));
+                String l;
+                while ((l = br.readLine()) != null) {
+                    String[] kv = l.split("\t", 2);
+                    if (kv.length >= 1 && !kv[0].isEmpty() && new File(kv[0]).isFile()) {
+                        ch.addImage(kv[0], kv.length > 1 ? kv[1] : "第 " + pageNo + " 页插图");
+                    }
+                }
+                br.close();
+            } catch (Throwable ignore) {
+            }
+            return;
+        }
+        StringBuilder idx = new StringBuilder();
         try {
             PDResources res = page.getResources();
             if (res == null) return;
@@ -409,6 +430,7 @@ public class PdfBookParser implements BookParser {
                             "pdfimg:p" + pageNo + "_" + taken);
                     if (path != null && !path.isEmpty()) {
                         ch.addImage(path, "第 " + pageNo + " 页插图");
+                        idx.append(path).append('\t').append("第 ").append(pageNo).append(" 页插图\n");
                         taken++;
                     }
                 } finally {
@@ -419,6 +441,16 @@ public class PdfBookParser implements BookParser {
                 }
             }
         } catch (Throwable ignore) {
+        }
+        if (idx.length() > 0) {
+            try {
+                File dir = new File(mediaDir, "pdfimg");
+                dir.mkdirs();
+                java.io.FileOutputStream fos = new java.io.FileOutputStream(idxFile, false);
+                fos.write(idx.toString().getBytes("UTF-8"));
+                fos.close();
+            } catch (Throwable ignore) {
+            }
         }
     }
 

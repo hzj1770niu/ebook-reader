@@ -419,6 +419,16 @@ public class ReaderActivity extends Activity {
                 }
                 final String tx = text;
                 final int dn = done;
+                try {
+                    if (b.ocrDir != null) {
+                        b.ocrDir.mkdirs();
+                        java.io.FileOutputStream fos = new java.io.FileOutputStream(
+                                new java.io.File(b.ocrDir, "p" + p0 + ".txt"), false);
+                        fos.write(tx.getBytes("UTF-8"));
+                        fos.close();
+                    }
+                } catch (Throwable ignore) {
+                }
                 ui.post(() -> {
                     if (p0 == 1 && weakTitle(b.title)) {
                         String line = firstLine(tx);
@@ -476,6 +486,14 @@ public class ReaderActivity extends Activity {
             ch.items.clear();
             ch.pendingOcr = true;
             ch.addText("（第 " + p + " 页正在本地识别，识别好了会自动出现在这里）");
+        }
+        // 重认是"重新来一遍"，旧结果先清掉，免得某页没认出来还被旧文本顶着
+        try {
+            if (book.ocrDir != null && book.ocrDir.isDirectory()) {
+                java.io.File[] olds = book.ocrDir.listFiles();
+                if (olds != null) for (java.io.File f : olds) f.delete();
+            }
+        } catch (Throwable ignore) {
         }
         book.invalidateBlocks();
         book.needsOcr = true;

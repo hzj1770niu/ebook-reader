@@ -24,6 +24,10 @@ public class Book {
     /** 拉平后的内容块（文本/插图），用于分屏、渲染与朗读 */
     private List<Block> blocks;
 
+    /** PDF 用的缓存目录：识别结果按页存这里，插图索引也存这里，下次打开直接读，不用重跑 */
+    public java.io.File ocrDir;
+    public java.io.File mediaDir;
+
     public static class Block {
         public static final int TYPE_TEXT = 0;
         public static final int TYPE_IMAGE = 1;

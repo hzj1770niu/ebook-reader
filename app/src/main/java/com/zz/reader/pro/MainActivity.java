@@ -292,10 +292,10 @@ public class MainActivity extends Activity {
     }
 
     /** 只留当前这一版的更新日志 */
-    private static final String CHANGELOG_NOW = "6.3\n"
-            + "检查更新改成几个来源同时问，取版本号最大的那份，不再被反代的旧缓存骗成已是最新\n"
-            + "新增 GitHub 接口作为兜底来源，它没有缓存\n"
-            + "书名前缀的问题在 6.2 已修，旧记录重新打开一次那本书就会更新";
+    private static final String CHANGELOG_NOW = "6.4\n"
+            + "识别结果按页存到本机，下次打开直接读，不用再从头识别一遍\n"
+            + "插图提取结果也建了索引，第二次打开不再重新解码每页图片，打开明显变快\n"
+            + "点“重认”会先清掉旧结果，重新识别整本";
 
     /** 关于软件：作者与两条声明 */
     private void showAbout() {
