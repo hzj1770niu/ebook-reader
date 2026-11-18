@@ -7,7 +7,11 @@ import android.os.ParcelFileDescriptor;
 
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader;
 import com.tom_roush.pdfbox.pdmodel.PDDocument;
+import com.tom_roush.pdfbox.cos.COSName;
 import com.tom_roush.pdfbox.pdmodel.PDPage;
+import com.tom_roush.pdfbox.pdmodel.PDResources;
+import com.tom_roush.pdfbox.pdmodel.graphics.PDXObject;
+import com.tom_roush.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import com.tom_roush.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import com.tom_roush.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import com.tom_roush.pdfbox.text.PDFTextStripper;
@@ -155,6 +159,13 @@ public class PdfBookParser implements BookParser {
                 }
 
                 Chapter c = new Chapter(title, auto);
+                PDPage pg = null;
+                try {
+                    pg = doc.getPage(i);
+                } catch (Throwable ignore) {
+                }
+                final PDPage pageObj = pg;
+                addPageImages(pageObj, c, i + 1, images, mediaDir);
                 if (cached) {
                     String t = readFile(cache);
                     if (!t.trim().isEmpty()) c.addText(t);
@@ -345,6 +356,68 @@ public class PdfBookParser implements BookParser {
             java.io.FileOutputStream out = new java.io.FileOutputStream(f);
             out.write(text.getBytes("UTF-8"));
             out.close();
+        } catch (Throwable ignore) {
+        }
+    }
+
+    /**
+     * 把这一页里内嵌的插图取出来，保存成图片文件，插在本页文字后面。
+     * 整页扫描图（就是这页本身）不算插图，跳过去，否则每页一张大图，书就没法读了。
+     */
+    private static void addPageImages(PDPage page, Chapter ch, int pageNo,
+                                      ImageStore images, File mediaDir) {
+        if (page == null || ch == null || images == null || mediaDir == null) return;
+        try {
+            PDResources res = page.getResources();
+            if (res == null) return;
+            float pw = page.getMediaBox().getWidth();
+            float ph = page.getMediaBox().getHeight();
+            if (pw <= 0 || ph <= 0) return;
+            float pageRatio = pw / ph;
+            int taken = 0;
+            for (COSName name : res.getXObjectNames()) {
+                if (taken >= 6) break;
+                PDXObject x = null;
+                try {
+                    x = res.getXObject(name);
+                } catch (Throwable e) {
+                    continue;
+                }
+                if (!(x instanceof PDImageXObject)) continue;
+                PDImageXObject img = (PDImageXObject) x;
+                int w = img.getWidth();
+                int h = img.getHeight();
+                if (w < 48 || h < 48) continue;
+                // 超大图先放过，避免解成位图时把内存撑爆
+                if ((long) w * h > 24000000L) continue;
+                float imgRatio = w / (float) h;
+                boolean fullPage = (long) w * h > 1500000L
+                        && (Math.abs(imgRatio - pageRatio) < 0.12f
+                        || Math.abs(imgRatio - 1f / pageRatio) < 0.12f);
+                if (fullPage) continue;
+                Bitmap bmp = null;
+                try {
+                    bmp = img.getImage();
+                } catch (Throwable e) {
+                    continue;
+                }
+                if (bmp == null) continue;
+                try {
+                    java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+                    bmp.compress(Bitmap.CompressFormat.PNG, 90, bos);
+                    String path = images.save(bos.toByteArray(), mediaDir,
+                            "pdfimg:p" + pageNo + "_" + taken);
+                    if (path != null && !path.isEmpty()) {
+                        ch.addImage(path, "第 " + pageNo + " 页插图");
+                        taken++;
+                    }
+                } finally {
+                    try {
+                        bmp.recycle();
+                    } catch (Throwable ignore) {
+                    }
+                }
+            }
         } catch (Throwable ignore) {
         }
     }

@@ -292,11 +292,11 @@ public class MainActivity extends Activity {
     }
 
     /** 只留当前这一版的更新日志 */
-    private static final String CHANGELOG_NOW = "6.0\n"
-            + "检查更新改成应用内下载：显示百分比进度，可以取消\n"
-            + "下载完自动校验指纹，对不上就重下，不会让你装坏包\n"
-            + "校验通过直接弹出系统安装界面，第一次要允许一次安装权限\n"
-            + "更新相关的弹窗去掉“发布页”入口，只留下载与以后再说";
+    private static final String CHANGELOG_NOW = "6.1\n"
+            + "PDF 正文里的插图现在能显示：解析时抽出每页内嵌图片，按页顺序插在文字后面\n"
+            + "插图是一个独立焦点，念“第 N 页插图”，换页、朗读、段落导航都不受影响\n"
+            + "整页扫描图不当插图，避免每页一张大图\n"
+            + "顺便确认：EPUB、HTML、FB2、DOCX、MOBI、AZW3 的插图一直是正常显示的";
 
     /** 关于软件：作者与两条声明 */
     private void showAbout() {
