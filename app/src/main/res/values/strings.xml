@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">电子书阅读器</string>
+    <string name="supported">支持 EPUB、Kindle 的 MOBI / AZW3 / PRC / AZW、PDF（文字版与扫描版，扫描页本地识别）、TXT、FB2、HTML、RTF、DOCX。TXT 自动识别编码，不乱码。</string>
+    <string name="open_file">打开电子书文件</string>
+    <string name="open_file_desc">从手机里选择一本电子书打开</string>
+    <string name="recent_books">最近阅读</string>
+    <string name="empty_recent">还没有读过书。点上面的按钮选一本。</string>
+</resources>

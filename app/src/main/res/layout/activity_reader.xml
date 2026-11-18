@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/readerRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="2dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="11sp"
+            android:focusable="false"
+            android:importantForAccessibility="no" />
+
+        <ScrollView
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/contentArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/tvFooter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="8dp"
+            android:maxLines="1"
+            android:textSize="11sp"
+            android:focusable="false"
+            android:importantForAccessibility="no" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/splash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:clickable="true"
+        android:importantForAccessibility="noHideDescendants"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/ivSplashCover"
+            android:layout_width="150dp"
+            android:layout_height="210dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="书籍封面" />
+
+        <TextView
+            android:id="@+id/tvSplashTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:gravity="center"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSplashSub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:gravity="center"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/progressLine"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_gravity="top" />
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:orientation="vertical"
+        android:background="#F2181818"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnBack"
+                style="@style/ToolButton"
+                android:text="书库"
+                android:contentDescription="返回书库" />
+
+            <Button
+                android:id="@+id/btnToc"
+                style="@style/ToolButton"
+                android:text="目录"
+                android:contentDescription="打开目录，按章节和页码跳转" />
+
+            <Button
+                android:id="@+id/btnBookmark"
+                style="@style/ToolButton"
+                android:text="书签"
+                android:contentDescription="打开书签列表，或添加当前页为书签" />
+
+            <Button
+                android:id="@+id/btnSearch"
+                style="@style/ToolButton"
+                android:text="搜索"
+                android:contentDescription="在整本书里搜索文字" />
+
+            <Button
+                android:id="@+id/btnAa"
+                style="@style/ToolButton"
+                android:text="Aa 设置"
+                android:contentDescription="打开阅读设置，调整字号、字体、行距、边距、主题、对齐" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvBookInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:paddingBottom="8dp"
+            android:textColor="#B3FFFFFF"
+            android:textSize="12sp"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="#F2181818"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp">
+
+            <SeekBar
+                android:id="@+id/seekProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="1000"
+                android:contentDescription="阅读进度，拖动可以跳到书的任意位置" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnPrevPage"
+                style="@style/ToolButton"
+                android:text="上一页"
+                android:contentDescription="上一页。也可以双指向右或向下滑" />
+
+            <Button
+                android:id="@+id/btnSpeak"
+                style="@style/ToolButton"
+                android:text="朗读"
+                android:contentDescription="从当前页开始朗读，会一直读到书末" />
+
+            <Button
+                android:id="@+id/btnNextPage"
+                style="@style/ToolButton"
+                android:text="下一页"
+                android:contentDescription="下一页。也可以双指向左或向上滑" />
+
+            <Button
+                android:id="@+id/btnHideBar"
+                style="@style/ToolButton"
+                android:text="收起"
+                android:contentDescription="收起上下工具栏，正文占满屏幕" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

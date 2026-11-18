@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="14dp"
+    android:paddingRight="14dp"
+    android:paddingTop="14dp">
+
+    <TextView
+        android:id="@+id/tvAppTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:focusable="true"
+        android:contentDescription="电子书阅读器" />
+
+    <TextView
+        android:id="@+id/tvSupported"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/supported"
+        android:textSize="13sp"
+        android:focusable="true"
+        android:paddingTop="6dp"
+        android:paddingBottom="10dp" />
+
+    <Button
+        android:id="@+id/btnOpen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
+        android:text="@string/open_file"
+        android:textSize="17sp"
+        android:contentDescription="@string/open_file_desc" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/recent_books"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:focusable="true"
+        android:paddingTop="16dp"
+        android:paddingBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/empty_recent"
+        android:textSize="15sp"
+        android:focusable="true"
+        android:paddingBottom="8dp" />
+
+    <ListView
+        android:id="@+id/listBooks"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@null" />
+
+    <Button
+        android:id="@+id/btnSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="52dp"
+        android:text="设置"
+        android:textSize="16sp"
+        android:contentDescription="设置，里面有退出软件" />
+
+    <TextView
+        android:id="@+id/tvVersion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="6dp"
+        android:paddingBottom="10dp"
+        android:text="电子书阅读器 4.2　PDF 双模式·分栏·识别"
+        android:textSize="11sp"
+        android:focusable="true" />
+</LinearLayout>

@@ -1,0 +1,12 @@
+# 构建产物
+/app/build/
+/build/
+/.gradle/
+/local.properties
+/verify/
+
+# 签名私钥不入库
+*.keystore
+
+# 第三方二进制 jar（构建时从 AAR 解出，见 README）
+/app/libs/*.jar

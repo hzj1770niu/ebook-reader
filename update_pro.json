@@ -1,0 +1,8 @@
+{
+  "package": "com.zz.reader.pro",
+  "versionCode": 28,
+  "versionName": "4.7",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v4.7/ebook_v4.7.apk",
+  "sha256": "9ba0554a026b3e6d0f72fc817365e9aafe30f91066f31e505989b8c2f314a912",
+  "changelog": "4.7\n· 检查更新改为读取本仓库的版本清单，软件里能直接看到新版本号、更新说明和下载地址\n· 设置：关于软件、检查更新、更新日志、退出软件\n· 首次运行弹一次使用声明，清除数据后重弹\n· Kindle 按书自带目录分章\n4.6\n· 首次运行弹一次使用声明\n4.5\n· 新增关于软件与检查更新\n4.4\n· 退出软件挪进设置；Kindle 按自带目录分章；新增更新日志\n4.3\n· 打开与识别分开，PDF 秒开，识别后台逐页进行\n4.2\n· 修扫描版 PDF 打不开、翻不了页；修页号错位；新增文字层校对\n4.1\n· 识别换 PP-OCRv5，加方向分类，多栏阅读顺序\n4.0\n· 首个正式版：更名电子书阅读器，新增 PDF 支持"
+}
