@@ -36,6 +36,8 @@ public class UpdateChecker {
             "https://cdn.jsdelivr.net/gh/hzj1770niu/ebook-reader@main/version.json",
             "https://fastly.jsdelivr.net/gh/hzj1770niu/ebook-reader@main/version.json",
             "https://gcore.jsdelivr.net/gh/hzj1770niu/ebook-reader@main/version.json",
+            // GitHub 接口没有 CDN 缓存，反代和镜像都滞后时靠它兜底
+            "https://api.github.com/repos/hzj1770niu/ebook-reader/contents/version.json?ref=main",
     };
 
     /** 启动时自动检查：开关关了就跳过；六小时内查过也跳过；失败不打扰 */
@@ -63,20 +65,39 @@ public class UpdateChecker {
         if (act == null || act.isFinishing()) return;
         if (!silent) Toast.makeText(act, "正在检查更新", Toast.LENGTH_SHORT).show();
         new Thread(() -> {
+            // 几个来源同时问，谁快谁慢不重要，最后拿版本号最大的那份。
+            // 反代和镜像经常缓存着旧内容，只取第一个成功的就会一直报旧版本。
             JSONObject got = null;
             String lastError = null;
-            for (String src : MANIFESTS) {
-                try {
-                    JSONObject o = fetch(src);
-                    if (o != null && o.optInt("versionCode", -1) > 0) {
-                        got = o;
-                        break;
-                    }
-                    lastError = "清单里没有版本号";
-                } catch (Throwable e) {
-                    String m = e.getMessage();
-                    lastError = (m == null || m.isEmpty()) ? e.getClass().getSimpleName() : m;
+            java.util.concurrent.ExecutorService pool =
+                    java.util.concurrent.Executors.newFixedThreadPool(MANIFESTS.length);
+            try {
+                java.util.List<java.util.concurrent.Future<JSONObject>> futures =
+                        new java.util.ArrayList<>();
+                for (String src : MANIFESTS) {
+                    futures.add(pool.submit(() -> {
+                        try {
+                            JSONObject o = fetch(src);
+                            if (o != null && o.optInt("versionCode", -1) > 0) return o;
+                        } catch (Throwable ignore) {
+                        }
+                        return null;
+                    }));
                 }
+                for (java.util.concurrent.Future<JSONObject> f : futures) {
+                    try {
+                        JSONObject o = f.get(8, java.util.concurrent.TimeUnit.SECONDS);
+                        if (o != null && (got == null
+                                || o.optInt("versionCode", -1) > got.optInt("versionCode", -1))) {
+                            got = o;
+                        }
+                    } catch (Throwable e) {
+                        String m = e.getMessage();
+                        lastError = (m == null || m.isEmpty()) ? e.getClass().getSimpleName() : m;
+                    }
+                }
+            } finally {
+                pool.shutdownNow();
             }
 
             final JSONObject o = got;
@@ -140,7 +161,17 @@ public class UpdateChecker {
             String line;
             while ((line = r.readLine()) != null) sb.append(line);
             r.close();
-            return new JSONObject(sb.toString());
+            String body = sb.toString();
+            // GitHub 的接口把文件内容用 base64 包了一层，这里先解开
+            if (url.contains("api.github.com")) {
+                JSONObject root = new JSONObject(body);
+                String b64 = root.optString("content", "");
+                if (b64.isEmpty()) throw new Exception("接口里没有内容");
+                String plain = new String(android.util.Base64.decode(
+                        b64.replaceAll("\\s+", ""), android.util.Base64.DEFAULT), "UTF-8");
+                return new JSONObject(plain);
+            }
+            return new JSONObject(body);
         } finally {
             c.disconnect();
         }

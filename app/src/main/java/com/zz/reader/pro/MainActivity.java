@@ -292,10 +292,10 @@ public class MainActivity extends Activity {
     }
 
     /** 只留当前这一版的更新日志 */
-    private static final String CHANGELOG_NOW = "6.2\n"
-            + "修书名前面那串数字：从文件管理器打开的书会先复制到缓存，缓存名是“哈希_原文件名”，这串被当成书名了\n"
-            + "现在统一去掉这段缓存前缀，PDF 和其它格式都生效\n"
-            + "旧记录需要重新打开一次那本书才会更新成正确的书名";
+    private static final String CHANGELOG_NOW = "6.3\n"
+            + "检查更新改成几个来源同时问，取版本号最大的那份，不再被反代的旧缓存骗成已是最新\n"
+            + "新增 GitHub 接口作为兜底来源，它没有缓存\n"
+            + "书名前缀的问题在 6.2 已修，旧记录重新打开一次那本书就会更新";
 
     /** 关于软件：作者与两条声明 */
     private void showAbout() {
