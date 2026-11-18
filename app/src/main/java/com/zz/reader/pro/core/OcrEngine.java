@@ -203,7 +203,8 @@ public class OcrEngine {
     // ---------------- 检测 ----------------
 
     private List<Box> detect(Bitmap src) throws Exception {
-        int maxSide = 1024;
+        // 整页放大到 1280 再找字：小字、密排的正文比 1024 认得更全
+        int maxSide = 1280;
         float scale = Math.min(1f, maxSide / (float) Math.max(src.getWidth(), src.getHeight()));
         int w = Math.max(32, (((int) (src.getWidth() * scale)) / 32) * 32);
         int h = Math.max(32, (((int) (src.getHeight() * scale)) / 32) * 32);
