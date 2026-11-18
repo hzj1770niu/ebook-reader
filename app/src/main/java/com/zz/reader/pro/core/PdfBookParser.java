@@ -456,6 +456,8 @@ public class PdfBookParser implements BookParser {
         // 生成工具留下的前缀
         s = s.replaceAll("(?i)^(microsoft word|microsoft powerpoint|microsoft publisher)\\s*-\\s*", "");
         // 前面挂的数字、序号、下划线、括号
+        // 缓存文件名前面那串十六进制（带字母的那种）先去掉
+        s = s.replaceAll("^[0-9a-fA-F]{5,16}[_\\-]", "");
         s = s.replaceAll("^[0-9０-９\\s_.\\-()（）【】\\[\\]]+", "");
         s = s.replaceAll("\\s{2,}", " ").trim();
         if (s.isEmpty()) return "";

@@ -292,11 +292,10 @@ public class MainActivity extends Activity {
     }
 
     /** 只留当前这一版的更新日志 */
-    private static final String CHANGELOG_NOW = "6.1\n"
-            + "PDF 正文里的插图现在能显示：解析时抽出每页内嵌图片，按页顺序插在文字后面\n"
-            + "插图是一个独立焦点，念“第 N 页插图”，换页、朗读、段落导航都不受影响\n"
-            + "整页扫描图不当插图，避免每页一张大图\n"
-            + "顺便确认：EPUB、HTML、FB2、DOCX、MOBI、AZW3 的插图一直是正常显示的";
+    private static final String CHANGELOG_NOW = "6.2\n"
+            + "修书名前面那串数字：从文件管理器打开的书会先复制到缓存，缓存名是“哈希_原文件名”，这串被当成书名了\n"
+            + "现在统一去掉这段缓存前缀，PDF 和其它格式都生效\n"
+            + "旧记录需要重新打开一次那本书才会更新成正确的书名";
 
     /** 关于软件：作者与两条声明 */
     private void showAbout() {
