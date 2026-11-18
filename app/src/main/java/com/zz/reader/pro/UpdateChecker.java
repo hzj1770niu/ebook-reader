@@ -124,7 +124,9 @@ public class UpdateChecker {
 
     /** 取一份清单；超时短一点，一个源卡住别拖太久 */
     private static JSONObject fetch(String url) throws Exception {
-        HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
+        // 每次带一个当前时间戳，CDN 与反代的缓存就绕过去了，拿到的永远是仓库里最新的那份
+        String u = url + (url.contains("?") ? "&" : "?") + "ts=" + System.currentTimeMillis();
+        HttpURLConnection c = (HttpURLConnection) new URL(u).openConnection();
         try {
             c.setConnectTimeout(5000);
             c.setReadTimeout(5000);

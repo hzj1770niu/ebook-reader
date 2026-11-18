@@ -125,6 +125,18 @@ public class Prefs {
         sp.edit().putBoolean("auto_update", v).apply();
     }
 
+    /** 扫描版 PDF 识别出的书名，按文件路径记下来，下次打开直接用它 */
+    public String pdfTitle(String path) {
+        if (path == null) return "";
+        return sp.getString("pdf_title_" + Math.abs(path.hashCode()), "");
+    }
+
+    public void setPdfTitle(String path, String title) {
+        if (path == null) return;
+        sp.edit().putString("pdf_title_" + Math.abs(path.hashCode()),
+                title == null ? "" : title).apply();
+    }
+
     /** 改排版时是否念一句“正在排版”，默认开 */
     public boolean layoutHint() {
         return sp.getBoolean("layout_hint", true);

@@ -114,7 +114,7 @@ public class PdfBookParser implements BookParser {
             Book book = new Book();
             book.format = "PDF";
             book.sourcePath = file.getAbsolutePath();
-            book.title = stripExt(file.getName());
+            book.title = pdfTitle(doc, file);
             book.pdfPath = file.getAbsolutePath();
             book.pdfPageCount = pageCount;
 
@@ -351,6 +351,50 @@ public class PdfBookParser implements BookParser {
 
     private static void report(String msg) {
         if (progress != null) progress.onProgress(msg);
+    }
+
+    /**
+     * 书名：先看 PDF 自己带的标题（中文书大多写在这里），没有或不可读才用文件名。
+     * 文件名常见"001234_书名.pdf""12345678书名.pdf"这种前面挂一串数字的，一并去掉。
+     */
+    private static String pdfTitle(PDDocument doc, java.io.File file) {
+        String meta = null;
+        try {
+            if (doc != null && doc.getDocumentInformation() != null) {
+                meta = doc.getDocumentInformation().getTitle();
+            }
+        } catch (Throwable ignore) {
+        }
+        // 以前识别出来的名字优先（扫描版文件名是纯数字时，第一页识别出的书名会存在这里）
+        try {
+            String ov = new Prefs(AppCtx.get()).pdfTitle(file.getAbsolutePath());
+            if (ov != null && !ov.trim().isEmpty()) return ov.trim();
+        } catch (Throwable ignore) {
+        }
+        String t = cleanTitle(meta);
+        if (!t.isEmpty()) return t;
+        String name = cleanTitle(stripExt(file.getName()));
+        return name.isEmpty() ? stripExt(file.getName()) : name;
+    }
+
+    private static String cleanTitle(String s) {
+        if (s == null) return "";
+        s = s.replace("\r", " ").replace("\n", " ").replace("\t", " ");
+        // 生成工具留下的前缀
+        s = s.replaceAll("(?i)^(microsoft word|microsoft powerpoint|microsoft publisher)\\s*-\\s*", "");
+        // 前面挂的数字、序号、下划线、括号
+        s = s.replaceAll("^[0-9０-９\\s_.\\-()（）【】\\[\\]]+", "");
+        s = s.replaceAll("\\s{2,}", " ").trim();
+        if (s.isEmpty()) return "";
+        // 乱码、控制符、纯数字一律不要
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (ch < 0x20 || ch == 0xFFFD) return "";
+        }
+        String keep = s.replaceAll("[0-9０-９\\s\\p{Punct}]", "");
+        if (keep.isEmpty()) return "";
+        if (s.length() > 80) s = s.substring(0, 80).trim();
+        return s;
     }
 
     private static String stripExt(String name) {

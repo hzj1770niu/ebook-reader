@@ -355,9 +355,7 @@ public class ReaderActivity extends Activity {
     private void afterBookLoaded() {
         findViewById(R.id.btnReOcr).setVisibility(
                 book.pdfPath == null ? View.GONE : View.VISIBLE);
-        tvBookInfo.setText(book.title + (book.author.isEmpty() ? "" : " · " + book.author)
-                + " · " + book.format + " · " + book.chapters.size() + " 章 · "
-                + formatCount(book.totalChars()) + "字 · " + book.imageCount() + " 张图");
+        tvBookInfo.setText(bookInfoText());
         readerRoot.post(() -> {
             if (readerRoot.getHeight() <= 0) {
                 if (layoutRetry++ < 40) readerRoot.postDelayed(this::afterBookLoaded, 60);
@@ -422,6 +420,17 @@ public class ReaderActivity extends Activity {
                 final String tx = text;
                 final int dn = done;
                 ui.post(() -> {
+                    if (p0 == 1 && weakTitle(b.title)) {
+                        String line = firstLine(tx);
+                        if (line != null) {
+                            b.title = line;
+                            new Prefs(this).setPdfTitle(b.pdfPath, line);
+                            tvBookInfo.setText(bookInfoText());
+                            if (barVisible && !book.title.isEmpty()) {
+                                tvHeader.setText(book.title + (curChapterTitle().isEmpty() ? "" : "  ·  " + curChapterTitle()));
+                            }
+                        }
+                    }
                     ch.items.clear();
                     ch.addText(tx);
                     ch.pendingOcr = false;
@@ -474,6 +483,41 @@ public class ReaderActivity extends Activity {
         buildLayout(false);
         announce("重新识别这本书，从第一页开始");
         startOcrWorker();
+    }
+
+    /** 书名只有一个数字串、或干脆空着，就用第一页认出来的第一行顶上 */
+    private boolean weakTitle(String t) {
+        if (t == null || t.trim().isEmpty()) return true;
+        String keep = t.trim().replaceAll("[0-9０-９\\s\\p{Punct}]", "");
+        return keep.isEmpty();
+    }
+
+    private String firstLine(String tx) {
+        if (tx == null) return null;
+        for (String raw : tx.split("\n")) {
+            String l = raw.trim();
+            if (l.isEmpty()) continue;
+            if (l.length() < 2) continue;
+            // 页眉常见的纯页码、纯符号跳过
+            String keep = l.replaceAll("[0-9０-９\\s\\p{Punct}]", "");
+            if (keep.isEmpty()) continue;
+            return l.length() > 60 ? l.substring(0, 60).trim() : l;
+        }
+        return null;
+    }
+
+    private String curChapterTitle() {
+        try {
+            return engine == null ? "" : engine.pages().get(pageIndex).chapterTitle;
+        } catch (Throwable e) {
+            return "";
+        }
+    }
+
+    private String bookInfoText() {
+        return book.title + (book.author.isEmpty() ? "" : " · " + book.author)
+                + " · " + book.format + " · " + book.chapters.size() + " 章 · "
+                + formatCount(book.totalChars()) + "字 · " + book.imageCount() + " 张图";
     }
 
     private static String formatCount(int n) {
@@ -1162,9 +1206,9 @@ public class ReaderActivity extends Activity {
         bottomBar.setVisibility(visible ? View.VISIBLE : View.GONE);
         applyChrome();
         if (visible) {
-            announce("工具栏已打开，可以用目录、书签、搜索和设置");
+            announce("工具栏已打开");
         } else {
-            announce("工具栏已收起。双指滑动翻页，点击屏幕右侧翻下一页");
+            announce("工具栏已收起");
         }
     }
 
@@ -1706,7 +1750,6 @@ public class ReaderActivity extends Activity {
         }
         if (!barVisible && book != null) {
             setBarVisible(true);
-            announce("工具栏已经出来。再按一次返回就退出这本书");
             return;
         }
         super.onBackPressed();
