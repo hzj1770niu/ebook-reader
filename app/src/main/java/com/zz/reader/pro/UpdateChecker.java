@@ -106,7 +106,8 @@ public class UpdateChecker {
                             .show();
                     return;
                 }
-                String body = notes == null ? "" : notes.trim();
+                String body = onlyNewer(notes, BuildConfig.VERSION_NAME);
+                if (body.isEmpty()) body = notes == null ? "" : notes.trim();
                 if (body.isEmpty()) body = "新版本 " + nn + "。";
                 if (body.length() > 900) body = body.substring(0, 900) + "……";
                 final String link = o.optString("apkUrl", "");
@@ -143,6 +144,113 @@ public class UpdateChecker {
         } finally {
             c.disconnect();
         }
+    }
+
+    /** 版本号按数字段比较，4.10 大于 4.9 */
+    static int compare(String a, String b) {
+        String x = a == null ? "" : a.trim();
+        String y = b == null ? "" : b.trim();
+        while (x.startsWith("v") || x.startsWith("V")) x = x.substring(1);
+        while (y.startsWith("v") || y.startsWith("V")) y = y.substring(1);
+        String[] p = x.split("\\.");
+        String[] q = y.split("\\.");
+        int n = Math.max(p.length, q.length);
+        for (int i = 0; i < n; i++) {
+            int pa = i < p.length ? num(p[i]) : 0;
+            int qb = i < q.length ? num(q[i]) : 0;
+            if (pa != qb) return pa < qb ? -1 : 1;
+        }
+        return 0;
+    }
+
+    private static int num(String s) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c >= '0' && c <= '9') sb.append(c);
+            else break;
+        }
+        if (sb.length() == 0) return 0;
+        try {
+            return Integer.parseInt(sb.toString());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    /** 只取比当前版本高的那些段的更新日志 */
+    static String onlyNewer(String changelog, String currentVersion) {
+        if (changelog == null) return "";
+        StringBuilder out = new StringBuilder();
+        boolean inNewer = false;
+        for (String raw : changelog.split("\n")) {
+            String t = raw.trim();
+            if (t.matches("v?[0-9]+(\\.[0-9]+)*")) {
+                String ver = t.startsWith("v") || t.startsWith("V") ? t.substring(1) : t;
+                inNewer = compare(ver, currentVersion) > 0;
+                if (inNewer) {
+                    if (out.length() > 0) out.append("\n");
+                    out.append(t);
+                }
+                continue;
+            }
+            if (inNewer && !t.isEmpty()) out.append("\n").append(raw.trim());
+        }
+        return out.toString().trim();
+    }
+
+    /** 取某一版自己的那一段 */
+    static String sectionOf(String changelog, String version) {
+        if (changelog == null) return "";
+        String want = version.startsWith("v") || version.startsWith("V") ? version.substring(1) : version;
+        StringBuilder out = new StringBuilder();
+        boolean in = false;
+        for (String raw : changelog.split("\n")) {
+            String t = raw.trim();
+            if (t.matches("v?[0-9]+(\\.[0-9]+)*")) {
+                String ver = t.startsWith("v") || t.startsWith("V") ? t.substring(1) : t;
+                in = ver.equals(want);
+                if (in) out.append(t);
+                continue;
+            }
+            if (in && !t.isEmpty()) out.append("\n").append(t);
+        }
+        return out.toString().trim();
+    }
+
+    /** 更新日志：按当前版本过滤，只写比当前版本高的；已经最新就写当前这一版 */
+    public static void showChangelog(final Activity act) {
+        if (act == null || act.isFinishing()) return;
+        new Thread(() -> {
+            String cl = null;
+            for (String src : MANIFESTS) {
+                try {
+                    JSONObject o = fetch(src);
+                    if (o != null && o.optString("changelog", "").trim().length() > 0) {
+                        cl = o.optString("changelog", "");
+                        break;
+                    }
+                } catch (Throwable ignore) {
+                }
+            }
+            final String all = cl;
+            act.runOnUiThread(() -> {
+                if (act.isFinishing()) return;
+                String text;
+                if (all == null || all.trim().isEmpty()) {
+                    text = "没能读到更新日志，检查一下网络再试。";
+                } else {
+                    text = onlyNewer(all, BuildConfig.VERSION_NAME);
+                    if (text.isEmpty()) text = sectionOf(all, BuildConfig.VERSION_NAME);
+                    if (text.isEmpty()) text = all;
+                }
+                new AlertDialog.Builder(act)
+                        .setTitle("更新日志")
+                        .setMessage(text)
+                        .setPositiveButton("关闭", null)
+                        .show();
+            });
+        }).start();
     }
 
     private static void openLink(Activity act, String url) {

@@ -125,6 +125,15 @@ public class Prefs {
         sp.edit().putBoolean("auto_update", v).apply();
     }
 
+    /** 书库排序：0 按最近打开，1 按名称，2 按加入先后 */
+    public int sortMode() {
+        return sp.getInt("sort_mode", 0);
+    }
+
+    public void setSortMode(int v) {
+        sp.edit().putInt("sort_mode", v).apply();
+    }
+
     /** 打开文档时是否写进书库，默认是 */
     public boolean addToLibrary() {
         return sp.getBoolean("add_to_library", true);

@@ -61,6 +61,7 @@ public class MainActivity extends Activity {
         cats = new CategoryStore(this);
         actionBar = findViewById(R.id.actionBar);
         findViewById(R.id.btnCategory).setOnClickListener(v -> pickCategory());
+        findViewById(R.id.btnSort).setOnClickListener(v -> pickSort());
         findViewById(R.id.btnMultiDelete).setOnClickListener(v -> confirmDeleteSelected());
         findViewById(R.id.btnMultiMove).setOnClickListener(v -> pickMoveTarget());
         findViewById(R.id.btnMultiAll).setOnClickListener(v -> selectAll());
@@ -95,6 +96,17 @@ public class MainActivity extends Activity {
         for (RecentStore.Item it : store.list()) {
             if (filterCat.isEmpty() || cats.categoryOf(it.uri).equals(filterCat)) items.add(it);
         }
+        final int mode = new Prefs(this).sortMode();
+        final java.text.Collator collator = java.text.Collator.getInstance(java.util.Locale.CHINA);
+        collator.setStrength(java.text.Collator.PRIMARY);
+        if (mode == 1) {
+            java.util.Collections.sort(items, (a, b) -> collator.compare(a.title, b.title));
+        } else if (mode == 2) {
+            java.util.Collections.sort(items, (a, b) -> Long.compare(a.time, b.time));
+        } else {
+            java.util.Collections.sort(items, (a, b) -> Long.compare(b.time, a.time));
+        }
+        updateSortButton();
         adapter.notifyDataSetChanged();
         boolean isEmpty = items.isEmpty();
         empty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
@@ -257,11 +269,9 @@ public class MainActivity extends Activity {
     }
 
     /** 只留当前这一版的更新日志 */
-    private static final String CHANGELOG_NOW = "5.2\n"
-            + "去掉各按钮后面多余的解释提示\n"
-            + "更新日志只显示当前这一版\n"
-            + "支持从文件管理器里直接打开 epub、mobi、azw3、pdf、txt、fb2、html、rtf、docx\n"
-            + "设置里新增“打开文档时加入书库”开关，关掉就只当文档查看器";
+    private static final String CHANGELOG_NOW = "5.3\n"
+            + "书库上方加排序：按名称、按最近打开、按加入先后\n"
+            + "更新日志按当前版本过滤，只列比当前版本高的那些版本";
 
     /** 关于软件：作者与两条声明 */
     private void showAbout() {
@@ -304,11 +314,7 @@ public class MainActivity extends Activity {
 
     /** 更新日志：从 4.0（正式更名为"电子书阅读器"）开始记 */
     private void showChangelog() {
-        new AlertDialog.Builder(this)
-                .setTitle("更新日志")
-                .setMessage(CHANGELOG_NOW)
-                .setPositiveButton("关闭", null)
-                .show();
+        UpdateChecker.showChangelog(this);
     }
 
     /** 退出软件：先确认一次，确认后结束所有界面并结束进程 */
@@ -354,6 +360,27 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         reload();
+    }
+
+    private void updateSortButton() {
+        Button b = findViewById(R.id.btnSort);
+        int mode = new Prefs(this).sortMode();
+        b.setText(mode == 1 ? "排序：名称" : (mode == 2 ? "排序：加入" : "排序：最近"));
+    }
+
+    private void pickSort() {
+        String[] opts = {"按最近打开", "按名称", "按加入先后"};
+        int cur = new Prefs(this).sortMode();
+        new AlertDialog.Builder(this)
+                .setTitle("排序方式")
+                .setSingleChoiceItems(opts, cur, (d, w) -> {
+                    new Prefs(this).setSortMode(w);
+                    d.dismiss();
+                    reload();
+                    Toast.makeText(this, "已改为" + opts[w], Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 
     // ---------------------------------------------------------------- 分类与多选

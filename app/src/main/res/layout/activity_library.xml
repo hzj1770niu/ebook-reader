@@ -46,14 +46,31 @@
         android:paddingTop="16dp"
         android:paddingBottom="4dp" />
 
-    <Button
-        android:id="@+id/btnCategory"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:text="全部分类"
-        android:textSize="15sp"
-        android:contentDescription="分类" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCategory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="48dp"
+            android:text="全部分类"
+            android:textSize="15sp"
+            android:contentDescription="分类" />
+
+        <Button
+            android:id="@+id/btnSort"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="48dp"
+            android:text="排序：最近"
+            android:textSize="15sp"
+            android:contentDescription="排序" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvEmpty"
