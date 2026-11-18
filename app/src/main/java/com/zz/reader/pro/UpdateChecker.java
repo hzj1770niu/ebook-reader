@@ -29,12 +29,13 @@ public class UpdateChecker {
      * 先是国内速度比较稳的 jsDelivr 几个镜像，再是 GitHub 原地址，最后是两三个反代。
      */
     private static final String[] MANIFESTS = {
-            "https://cdn.jsdelivr.net/gh/hzj1770niu/ebook-reader@main/update_pro.json",
-            "https://fastly.jsdelivr.net/gh/hzj1770niu/ebook-reader@main/update_pro.json",
-            "https://gcore.jsdelivr.net/gh/hzj1770niu/ebook-reader@main/update_pro.json",
-            "https://raw.githubusercontent.com/hzj1770niu/ebook-reader/main/update_pro.json",
-            "https://ghproxy.net/https://raw.githubusercontent.com/hzj1770niu/ebook-reader/main/update_pro.json",
-            "https://gh-proxy.com/https://raw.githubusercontent.com/hzj1770niu/ebook-reader/main/update_pro.json",
+            // 反代优先（受限网络下也能通），再是 GitHub 原址，最后是镜像兜底
+            "https://ghproxy.net/https://raw.githubusercontent.com/hzj1770niu/ebook-reader/main/version.json",
+            "https://gh-proxy.com/https://raw.githubusercontent.com/hzj1770niu/ebook-reader/main/version.json",
+            "https://raw.githubusercontent.com/hzj1770niu/ebook-reader/main/version.json",
+            "https://cdn.jsdelivr.net/gh/hzj1770niu/ebook-reader@main/version.json",
+            "https://fastly.jsdelivr.net/gh/hzj1770niu/ebook-reader@main/version.json",
+            "https://gcore.jsdelivr.net/gh/hzj1770niu/ebook-reader@main/version.json",
     };
 
     /** 启动时自动检查：开关关了就跳过；六小时内查过也跳过；失败不打扰 */
@@ -129,6 +130,8 @@ public class UpdateChecker {
             c.setInstanceFollowRedirects(true);
             c.setRequestProperty("User-Agent", "EbookReader/" + Build.VERSION.SDK_INT);
             c.setRequestProperty("Accept", "application/json");
+            c.setRequestProperty("Cache-Control", "no-cache, no-store");
+            c.setRequestProperty("Pragma", "no-cache");
             int code = c.getResponseCode();
             if (code != 200) throw new Exception("HTTP " + code);
             StringBuilder sb = new StringBuilder();
