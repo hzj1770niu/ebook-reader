@@ -1,9 +1,9 @@
 {
- "package": "com.zz.reader.pro",
- "versionCode": 68,
- "versionName": "8.7",
- "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.7/ebook_v8.7.apk",
- "sha256": "935481da8f6d108a2b3487b8ffd80f1db9f49a3abbcb125b2a55e8b2b6d798b5",
- "changelog": "8.7\nEPUB、Kindle 的原版式入口补齐：以前导入的书没解出原始网页，现在打开时会自动补一份，进度和笔记都不动\n原版式按钮改成看书的类型显示，不再因为老书没数据就整个消失；实在解不出来的会说明原因\n查看原版时可以隐藏控件，画面只留一个「控件」按钮，点它把上下栏叫回来\n原版页的上一页、下一页、关闭不再拖长说明，进去的确认框也只留标题\n各处冗余提示精简：使用声明、清除识别结果、连续滚动与文字层校对的说明、在线识别那几处说明都压短了\n设置里几个偏长的项目名缩短，在线识别开着时也不再多说一遍本地识别怎么走\n拍照识别里两条重复的失败提示合成一条\n解决已知问题\n\n",
- "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.7"
+  "package": "com.zz.reader.pro",
+  "versionCode": 69,
+  "versionName": "8.8",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.8/ebook_v8.8.apk",
+  "sha256": "a23533da6c6d598f65a8f282ba893cc5401c291664998b83d5b6f99365589b62",
+  "changelog": "- 修「重认」按钮点了没反应：以前按重排后的页序当 PDF 页码，常对不上，取不到页就什么都不播报地退出；现在按章节原始页号换回真实页码。\n- 重认确认框从列表改成三个按钮（本地 / 在线 / 取消），读屏能直接落到按钮上，标题也会念出第几页。\n- 重认路径里原来会静默退出的分支都补了播报（不是 PDF、页号找不到、那页没内容、弹窗失败）。\n- 解决已知问题。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.8"
 }
