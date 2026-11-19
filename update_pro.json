@@ -1,9 +1,9 @@
 {
  "package": "com.zz.reader.pro",
- "versionCode": 62,
- "versionName": "8.1",
- "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.1/ebook_v8.1.apk",
- "sha256": "cdb5682a4c9e571b44802d8b6fb27dbb112afe5f3ff969c3d1f6b6d1c37b1648",
- "changelog": "8.1\n阅读页工具栏新增「重认」：点一下只重认当前这一页，再自己选本地还是在线，这一次的选择不记住，下次还是默认本地\n设置里新增「在线识别」：填自己申请的 Key 才能用，Key 只存本机；不填就全部在本机识别\n在线识别可选「用高精度版」，认得更准，免费次数同样是每月一千\n另有「整本识别都走在线」开关，默认关；不开时整本后台识别一律走本地\n拍照取景：对着文字不用点，认出这一块就自动念出来，同一段不重复念\n坐标提示精简成“左一点、右一点、上一点、下一点、近一点、远一点、好了能拍”\n拍照页新增“从相册选一页”；拍完立刻回一句“照片收到了，正在认字”\n导出和清空按钮不再灰着点不动，真没内容时才提示\n扫描页锁竖屏，已扫的页存起来，被系统收掉回来还能接上\n解决已知问题\n\n8.0\n设置里新增“在线识别”入口：填自己申请的 Key 才能用，Key 只存本机\n\n",
- "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.1"
+ "versionCode": 63,
+ "versionName": "8.2",
+ "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.2/ebook_v8.2.apk",
+ "sha256": "7d100639548e5e4c998060b664260059bc1b3534c91c156850738229352185a8",
+ "changelog": "8.2\n设置首层多了一个「在线识别精度」按钮，点开能选通用或高精度，选完立刻生效，不用再进二级对话框\n解决已知问题\n\n",
+ "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.2"
 }
