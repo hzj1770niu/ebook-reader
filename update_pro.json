@@ -1,9 +1,9 @@
 {
  "package": "com.zz.reader.pro",
- "versionCode": 63,
- "versionName": "8.2",
- "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.2/ebook_v8.2.apk",
- "sha256": "7d100639548e5e4c998060b664260059bc1b3534c91c156850738229352185a8",
- "changelog": "8.2\n设置首层多了一个「在线识别精度」按钮，点开能选通用或高精度，选完立刻生效，不用再进二级对话框\n解决已知问题\n\n",
- "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.2"
+ "versionCode": 64,
+ "versionName": "8.3",
+ "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.3/ebook_v8.3.apk",
+ "sha256": "5c15b3f217921bbe988f57b9cd3b5c4b77122cdc553db2119f4714042e5035a3",
+ "changelog": "8.3\n拍照取景认出字以后，那块字自己就是读屏能摸到的焦点，手指摸过去读的就是那里的文字，不用再点\n对着文字不用点，认出来直接念；同一段话不重复念。设置里新增「拍照识别」，可以关掉自动念\n方向提示压到最短：左一点、右一点、上一点、下一点、近一点、远一点、好了能拍；对准以后不再重复报方向\n加了崩溃记录，万一闪退，下次进拍照识别会念出上次闪退的原因\n解决已知问题\n\n",
+ "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.3"
 }
