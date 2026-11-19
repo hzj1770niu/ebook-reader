@@ -1,9 +1,9 @@
 {
  "package": "com.zz.reader.pro",
- "versionCode": 65,
- "versionName": "8.4",
- "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.4/ebook_v8.4.apk",
- "sha256": "a89f3bb11da5afa49289dfc5b7f50579745f442c6036785db5da29607b5bbc97",
- "changelog": "8.4\n拍完先回到“拍照识别”这一层，面前就是导出 TXT 和清空，能马上存下来\n拍到的照片先记一笔，万一中途被系统收掉，再进来会自动接着认，不会白拍\n退出取景前先把相机彻底停稳，减少关相机那一下的闪退\n拍照识别页提示精简：按钮不再拖一长串说明，状态只说一句\n解决已知问题\n\n",
- "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.4"
+ "versionCode": 66,
+ "versionName": "8.5",
+ "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.5/ebook_v8.5.apk",
+ "sha256": "ea71b691cdafdf282280e6c609615ae5019097342e8c406ae092feb8e8155d73",
+ "changelog": "8.5\n在线识别新增「用含位置版」开关。通用档建议一直开着：额度和价格都一样，只多给每行的坐标，双栏才分得开；高精度档关掉后能用每月 1000 次而不是 500 次，代价是双栏的书会串行\n切回通用档时自动把含位置版打开，不会因为之前关过就串栏\n本月已用次数可以手动改：在控制台看到实际用了多少，填进去就能跟本地记账对齐\n百度返回「本月次数用完」时，软件自动锁成只走本地，整本走在线也一并停下，下个月自己解除，也可以手动取消那个勾\n解决已知问题\n\n",
+ "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.5"
 }
