@@ -1,9 +1,9 @@
 {
  "package": "com.zz.reader.pro",
- "versionCode": 66,
- "versionName": "8.5",
- "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.5/ebook_v8.5.apk",
- "sha256": "ea71b691cdafdf282280e6c609615ae5019097342e8c406ae092feb8e8155d73",
- "changelog": "8.5\n在线识别新增「用含位置版」开关。通用档建议一直开着：额度和价格都一样，只多给每行的坐标，双栏才分得开；高精度档关掉后能用每月 1000 次而不是 500 次，代价是双栏的书会串行\n切回通用档时自动把含位置版打开，不会因为之前关过就串栏\n本月已用次数可以手动改：在控制台看到实际用了多少，填进去就能跟本地记账对齐\n百度返回「本月次数用完」时，软件自动锁成只走本地，整本走在线也一并停下，下个月自己解除，也可以手动取消那个勾\n解决已知问题\n\n",
- "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.5"
+ "versionCode": 67,
+ "versionName": "8.6",
+ "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.6/ebook_v8.6.apk",
+ "sha256": "25c68da91c83a6bf952977fe8d06b1e5f2f87a396b42483c4939dcc69af9ea46",
+ "changelog": "8.6\n每页都重复的水印会自动不念：加微信、QQ 群、某某制作 仅供学习这类，压在图上的短行，识别时直接跳过\n判断看三条：短行、每页贴在同一处、同一处攒够页数。带微信、制作、仅供这类字眼的两页就认；不带字眼的，比如页眉书名，要五页\n水印里的微信号每页不一样也能认出来，比对时先把数字字母去掉只比汉字\n页码顺手当水印处理，不再念第几页\n确认以后会回头把前面几页已经认好的同样行也删掉，不用重认一遍\n设置里新增开关「滤掉每页重复的水印」，默认打开\n解决已知问题\n\n",
+ "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.6"
 }
