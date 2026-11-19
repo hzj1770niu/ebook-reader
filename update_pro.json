@@ -1,9 +1,9 @@
 {
  "package": "com.zz.reader.pro",
- "versionCode": 49,
- "versionName": "6.8",
- "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v6.8/ebook_v6.8.apk",
- "sha256": "121fa32fd2d3a8894e466298e8f15b3d20db9267ae52cd0d2e6a70527cfd7d88",
- "changelog": "文字层 PDF 改成逐字取坐标自己聚行，一行被字体或字距切断不再散成几行\n两栏三栏先按通栏标题切横带，带内从左栏读到右栏，通栏标题不再塞进栏中间\n聚行加了横向间距判断，左右栏基线对齐也不会被并成一行\n页眉页码自动清掉，只有多数页都重复的短句才删，章节标题不受影响\n单页解析出错不再连累后面，从下一页接着扫\n英文单词之间按字距补空格",
- "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v6.8"
+ "versionCode": 50,
+ "versionName": "6.9",
+ "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v6.9/ebook_v6.9.apk",
+ "sha256": "36996bf09eb102714c81d699b935ee1fabea34448f86839d5b7fbac63557632e",
+ "changelog": "文字层乱码判定加强：cid 占位、单字符刷屏、大片空白都判坏，自动转识别\n图文混排页不再因整页图丢掉文字\nForm XObject 里的插图现在能取出来\n逐页聚行即释放，几百页的书不吃内存\n断点续扫上限按页数放开\n页宽按 95 分位，装饰线不干扰分栏\n页眉判断改用裁切框高度",
+ "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v6.9"
 }
