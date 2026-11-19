@@ -1,9 +1,9 @@
 {
  "package": "com.zz.reader.pro",
- "versionCode": 48,
- "versionName": "6.7",
- "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v6.7/ebook_v6.7.apk",
- "sha256": "81e8b43c383daf84c00bdb0d4c8f5635a9203b28dabd5245e47a45535b7329be",
- "changelog": "整页先做版面分析再读，五栏拼版不再串栏乱序\n标题、图注、栏目各归各位，标题不再插进正文中间\n跨块半句自动接上，不再断成两截\n书页里的框线表格按行列读：先报几行几列，再一行一行念\n表格判定加三道门槛，正文不会被误当表格读乱\n扫描页渲染提到两千像素宽，细字更稳\n识别模型换 server 版，错字更少\n装饰碎片过滤，大模型按需解压",
- "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v6.7"
+ "versionCode": 49,
+ "versionName": "6.8",
+ "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v6.8/ebook_v6.8.apk",
+ "sha256": "121fa32fd2d3a8894e466298e8f15b3d20db9267ae52cd0d2e6a70527cfd7d88",
+ "changelog": "文字层 PDF 改成逐字取坐标自己聚行，一行被字体或字距切断不再散成几行\n两栏三栏先按通栏标题切横带，带内从左栏读到右栏，通栏标题不再塞进栏中间\n聚行加了横向间距判断，左右栏基线对齐也不会被并成一行\n页眉页码自动清掉，只有多数页都重复的短句才删，章节标题不受影响\n单页解析出错不再连累后面，从下一页接着扫\n英文单词之间按字距补空格",
+ "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v6.8"
 }
