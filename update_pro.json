@@ -1,9 +1,9 @@
 {
  "package": "com.zz.reader.pro",
- "versionCode": 50,
- "versionName": "6.9",
- "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v6.9/ebook_v6.9.apk",
- "sha256": "36996bf09eb102714c81d699b935ee1fabea34448f86839d5b7fbac63557632e",
- "changelog": "文字层乱码判定加强：cid 占位、单字符刷屏、大片空白都判坏，自动转识别\n图文混排页不再因整页图丢掉文字\nForm XObject 里的插图现在能取出来\n逐页聚行即释放，几百页的书不吃内存\n断点续扫上限按页数放开\n页宽按 95 分位，装饰线不干扰分栏\n页眉判断改用裁切框高度",
- "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v6.9"
+ "versionCode": 51,
+ "versionName": "7.0",
+ "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v7.0/ebook_v7.0.apk",
+ "sha256": "7c259c50778bb4fac470aaa2c0aeb79226381d51f3f1c6ed194b45b0db85fb23",
+ "changelog": "设置里新增“清除已识别图书”，可以单独清掉所有书的识别结果\n清理前弹窗写清楚：清了以后同一本书再打开要重新识别一遍\n只删识别文字，书、封面、插图、进度、书签都不动\n清完报出清掉多少页",
+ "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v7.0"
 }
