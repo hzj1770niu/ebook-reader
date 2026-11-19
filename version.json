@@ -1,9 +1,9 @@
 {
  "package": "com.zz.reader.pro",
- "versionCode": 67,
- "versionName": "8.6",
- "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.6/ebook_v8.6.apk",
- "sha256": "25c68da91c83a6bf952977fe8d06b1e5f2f87a396b42483c4939dcc69af9ea46",
- "changelog": "8.6\n每页都重复的水印会自动不念：加微信、QQ 群、某某制作 仅供学习这类，压在图上的短行，识别时直接跳过\n判断看三条：短行、每页贴在同一处、同一处攒够页数。带微信、制作、仅供这类字眼的两页就认；不带字眼的，比如页眉书名，要五页\n水印里的微信号每页不一样也能认出来，比对时先把数字字母去掉只比汉字\n页码顺手当水印处理，不再念第几页\n确认以后会回头把前面几页已经认好的同样行也删掉，不用重认一遍\n设置里新增开关「滤掉每页重复的水印」，默认打开\n解决已知问题\n\n",
- "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.6"
+ "versionCode": 68,
+ "versionName": "8.7",
+ "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.7/ebook_v8.7.apk",
+ "sha256": "935481da8f6d108a2b3487b8ffd80f1db9f49a3abbcb125b2a55e8b2b6d798b5",
+ "changelog": "8.7\nEPUB、Kindle 的原版式入口补齐：以前导入的书没解出原始网页，现在打开时会自动补一份，进度和笔记都不动\n原版式按钮改成看书的类型显示，不再因为老书没数据就整个消失；实在解不出来的会说明原因\n查看原版时可以隐藏控件，画面只留一个「控件」按钮，点它把上下栏叫回来\n原版页的上一页、下一页、关闭不再拖长说明，进去的确认框也只留标题\n各处冗余提示精简：使用声明、清除识别结果、连续滚动与文字层校对的说明、在线识别那几处说明都压短了\n设置里几个偏长的项目名缩短，在线识别开着时也不再多说一遍本地识别怎么走\n拍照识别里两条重复的失败提示合成一条\n解决已知问题\n\n",
+ "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.7"
 }
