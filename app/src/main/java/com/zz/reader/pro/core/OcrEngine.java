@@ -86,7 +86,7 @@ public class OcrEngine {
     // ---------------- 对外 ----------------
 
     public String recognizePage(File pdf, int pageIndex) throws Exception {
-        Bitmap bmp = renderPage(pdf, pageIndex, 1000);
+        Bitmap bmp = renderPage(pdf, pageIndex, 1600);
         if (bmp == null) return "";
         try {
             return recognize(bmp);
@@ -136,91 +136,191 @@ public class OcrEngine {
     // ---------------- 主流程 ----------------
 
     public String recognize(Bitmap src) throws Exception {
-        // 1) 整页方向：上下颠倒的页先转正
-        boolean rotated = false;
+        Bitmap work = src;
+        Bitmap owned = null;
         try {
-            if (classifyDirection(src) == 180) {
-                Matrix m = new Matrix();
-                m.postRotate(180);
-                Bitmap turned = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), m, true);
-                src = turned;
-                rotated = true;
+            // 1) 整页方向：上下颠倒的页先转正
+            try {
+                if (classifyDirection(src) == 180) {
+                    owned = rotate(src, 180);
+                    work = owned;
+                }
+            } catch (Throwable ignore) {
             }
-        } catch (Throwable ignore) {
-        }
 
-        List<Box> boxes;
-        try {
-            boxes = detect(src);
-        } catch (Exception e) {
-            if (rotated && !src.isRecycled()) src.recycle();
-            throw e;
-        }
-        if (boxes == null || boxes.isEmpty()) {
-            if (rotated && !src.isRecycled()) src.recycle();
-            return "";
-        }
-
-        final int pageW = src.getWidth();
-
-        // 2) 分栏：按整页横向投影找真栏边界。
-        // 以前是看"相邻两块的横坐标差多少"，同栏里一长一短的行就会误报，断点一多干脆全丢，
-        // 结果左右栏交织着拼，句子断成几截。
-        final int[] col = new int[boxes.size()];
-        {
-            float[] lf = new float[boxes.size()];
-            float[] rt = new float[boxes.size()];
-            for (int i = 0; i < boxes.size(); i++) {
-                Box b = boxes.get(i);
-                lf[i] = b.cx - b.w / 2f;
-                rt[i] = b.cx + b.w / 2f;
+            List<Box> boxes = detect(work);
+            // 整页横放的扫描件：文字行在图上变成竖的，检测框全是竖长条，识别率会很差。
+            // 这种情况先把整页转九十度再认，哪个方向认得出横排就用哪个。
+            if (mostlyVertical(boxes)) {
+                Bitmap r90 = null;
+                Bitmap r270 = null;
+                try {
+                    r90 = rotate(src, 90);
+                    List<Box> b90 = detect(r90);
+                    if (!mostlyVertical(b90)) {
+                        if (owned != null && !owned.isRecycled()) owned.recycle();
+                        owned = r90;
+                        r90 = null;
+                        work = owned;
+                        boxes = b90;
+                    } else {
+                        r270 = rotate(src, -90);
+                        List<Box> b270 = detect(r270);
+                        if (!mostlyVertical(b270)) {
+                            if (owned != null && !owned.isRecycled()) owned.recycle();
+                            owned = r270;
+                            r270 = null;
+                            work = owned;
+                            boxes = b270;
+                        }
+                    }
+                } catch (Throwable ignore) {
+                } finally {
+                    if (r90 != null && !r90.isRecycled()) r90.recycle();
+                    if (r270 != null && !r270.isRecycled()) r270.recycle();
+                }
             }
-            int[] c = ColumnSplit.group(lf, rt, pageW, 4);
-            System.arraycopy(c, 0, col, 0, c.length);
-        }
-        final List<Box> order = boxes;
-        Integer[] idx = new Integer[order.size()];
-        for (int i = 0; i < idx.length; i++) idx[i] = i;
-        java.util.Arrays.sort(idx, new Comparator<Integer>() {
-            @Override
-            public int compare(Integer ia, Integer ib) {
-                if (col[ia] != col[ib]) return col[ia] < col[ib] ? -1 : 1;
-                Box a = order.get(ia);
-                Box b = order.get(ib);
-                if (a.cy != b.cy) return a.cy < b.cy ? -1 : 1;
-                return a.cx < b.cx ? -1 : (a.cx == b.cx ? 0 : 1);
-            }
-        });
-        List<Box> sorted = new ArrayList<>(order.size());
-        int[] colSorted = new int[idx.length];
-        for (int i = 0; i < idx.length; i++) {
-            sorted.add(order.get(idx[i]));
-            colSorted[i] = col[idx[i]];
-        }
-        boxes = sorted;
-        final int[] colOfBox = colSorted;
+            if (boxes == null || boxes.isEmpty()) return "";
 
-        // 3) 逐块摆正后识别，栏内按行拼接
-        StringBuilder out = new StringBuilder();
-        int lastCol = -1;
-        float lastY = -1e9f;
-        float lastH = 20;
-        for (int bi = 0; bi < boxes.size(); bi++) {
-            Box b = boxes.get(bi);
-            String t = recognizeBox(src, b);
-            if (t == null || t.trim().isEmpty()) continue;
-            int c = colOfBox[bi];
-            boolean newLine = lastCol != c || b.cy - lastY > lastH * 0.9f;
-            if (newLine) {
-                if (out.length() > 0) out.append('\n');
+            // 2) 把断成几块的一行合回一行，否则每块只有半行，裁图会把字切掉
+            boxes = mergeRows(boxes);
+
+            final int pageW = work.getWidth();
+
+            // 3) 分栏：按整页横向投影找真栏边界。
+            // 以前是看"相邻两块的横坐标差多少"，同栏里一长一短的行就会误报，断点一多干脆全丢，
+            // 结果左右栏交织着拼，句子断成几截。
+            final int[] col = new int[boxes.size()];
+            {
+                float[] lf = new float[boxes.size()];
+                float[] rt = new float[boxes.size()];
+                for (int i = 0; i < boxes.size(); i++) {
+                    Box b = boxes.get(i);
+                    lf[i] = b.cx - b.w / 2f;
+                    rt[i] = b.cx + b.w / 2f;
+                }
+                int[] c = ColumnSplit.group(lf, rt, pageW, 4);
+                System.arraycopy(c, 0, col, 0, c.length);
             }
-            out.append(t.trim());
-            lastCol = c;
-            lastY = b.cy;
-            lastH = Math.max(12, b.h);
+            final List<Box> order = boxes;
+            Integer[] idx = new Integer[order.size()];
+            for (int i = 0; i < idx.length; i++) idx[i] = i;
+            java.util.Arrays.sort(idx, new Comparator<Integer>() {
+                @Override
+                public int compare(Integer ia, Integer ib) {
+                    if (col[ia] != col[ib]) return col[ia] < col[ib] ? -1 : 1;
+                    Box a = order.get(ia);
+                    Box b = order.get(ib);
+                    if (a.cy != b.cy) return a.cy < b.cy ? -1 : 1;
+                    return a.cx < b.cx ? -1 : (a.cx == b.cx ? 0 : 1);
+                }
+            });
+            List<Box> sorted = new ArrayList<>(order.size());
+            int[] colSorted = new int[idx.length];
+            for (int i = 0; i < idx.length; i++) {
+                sorted.add(order.get(idx[i]));
+                colSorted[i] = col[idx[i]];
+            }
+            boxes = sorted;
+            final int[] colOfBox = colSorted;
+
+            // 4) 逐块摆正后识别，栏内按行拼接
+            StringBuilder out = new StringBuilder();
+            int lastCol = -1;
+            float lastY = -1e9f;
+            float lastH = 20;
+            int empty = 0;
+            for (int bi = 0; bi < boxes.size(); bi++) {
+                Box b = boxes.get(bi);
+                String t = null;
+                try {
+                    t = recognizeBox(work, b);
+                } catch (Throwable e) {
+                    lastError = e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage();
+                }
+                if (t == null || t.trim().isEmpty()) {
+                    empty++;
+                    continue;
+                }
+                int c = colOfBox[bi];
+                boolean newLine = lastCol != c || b.cy - lastY > lastH * 0.9f;
+                if (newLine) {
+                    if (out.length() > 0) out.append('\n');
+                }
+                out.append(t.trim());
+                lastCol = c;
+                lastY = b.cy;
+                lastH = Math.max(12, b.h);
+            }
+            // 整页几乎都认不出来，说明模型或截图出了问题，要让它能报出来，而不是悄悄返回空串
+            if (out.length() == 0 && !boxes.isEmpty()) {
+                if (lastError == null || lastError.isEmpty()) lastError = "这一页所有文字块都没认出内容";
+            } else if (empty > 0 && empty > boxes.size() / 2) {
+                lastError = "这页有 " + empty + " 行没认出来，可以试试重认或调字号";
+            }
+            return out.toString();
+        } finally {
+            if (owned != null && !owned.isRecycled()) {
+                try {
+                    owned.recycle();
+                } catch (Throwable ignore) {
+                }
+            }
         }
-        if (rotated && !src.isRecycled()) src.recycle();
-        return out.toString();
+    }
+
+    private static Bitmap rotate(Bitmap src, int degrees) {
+        if (degrees == 0) return null;
+        Matrix m = new Matrix();
+        m.postRotate(degrees);
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), m, true);
+    }
+
+    /** 检测框绝大多数是竖长条，说明文字行是竖的，整页方向不对 */
+    private static boolean mostlyVertical(List<Box> boxes) {
+        if (boxes == null || boxes.size() < 8) return false;
+        int vert = 0;
+        for (Box b : boxes) if (b.h > b.w * 1.8f) vert++;
+        return vert > boxes.size() * 0.7f;
+    }
+
+    /** 同一行被切成几块的情况合回一行 */
+    private List<Box> mergeRows(List<Box> boxes) {
+        int n = boxes.size();
+        if (n < 2) return boxes;
+        float[] cx = new float[n];
+        float[] cy = new float[n];
+        float[] w = new float[n];
+        float[] h = new float[n];
+        for (int i = 0; i < n; i++) {
+            Box b = boxes.get(i);
+            cx[i] = b.cx;
+            cy[i] = b.cy;
+            w[i] = b.w;
+            h[i] = b.h;
+        }
+        int[] leader = BoxMerge.merge(cx, cy, w, h);
+        List<Box> out = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (leader[i] != i) continue;
+            float x0 = 1e9f, x1 = -1e9f, y0 = 1e9f, y1 = -1e9f;
+            for (int j = 0; j < n; j++) {
+                if (leader[j] != i) continue;
+                Box b = boxes.get(j);
+                x0 = Math.min(x0, b.cx - b.w / 2f);
+                x1 = Math.max(x1, b.cx + b.w / 2f);
+                y0 = Math.min(y0, b.cy - b.h / 2f);
+                y1 = Math.max(y1, b.cy + b.h / 2f);
+            }
+            Box nb = new Box();
+            nb.cx = (x0 + x1) / 2f;
+            nb.cy = (y0 + y1) / 2f;
+            nb.w = x1 - x0;
+            nb.h = y1 - y0;
+            nb.angle = boxes.get(i).angle;
+            out.add(nb);
+        }
+        return out;
     }
 
     // ---------------- 检测 ----------------
@@ -287,7 +387,8 @@ public class OcrEngine {
                         }
                     }
                 }
-                if (count < 14) continue;
+                // 以前是 14，句号、逗号、笔画少的字面积不够就被扔掉，整行读下来缺标点
+                if (count < 5) continue;
                 double mcx = sumX / count, mcy = sumY / count;
                 double mu20 = sumXX / count - mcx * mcx;
                 double mu02 = sumYY / count - mcy * mcy;
@@ -313,8 +414,12 @@ public class OcrEngine {
     // ---------------- 识别 ----------------
 
     private String recognizeBox(Bitmap src, Box b) throws Exception {
-        int cw = (int) b.w + 8;
-        int ch = (int) b.h + 8;
+        // 检测框本身就比字略紧，再只加八像素，上下结构和标点会被切掉一截。
+        // 按行高比例外扩，小字也能兜住。
+        int padX = Math.max(6, Math.round(b.h * 0.28f));
+        int padY = Math.max(4, Math.round(b.h * 0.20f));
+        int cw = (int) b.w + padX * 2;
+        int ch = (int) b.h + padY * 2;
         if (cw < 6 || ch < 6) return "";
         Bitmap crop;
         if (Math.abs(b.angle) > 0.05f) {
@@ -341,6 +446,22 @@ public class OcrEngine {
             resized.recycle();
         }
         return ctc(out[0]);
+    }
+
+    private String recOne(Bitmap img, int rw, int rh) throws Exception {
+        try {
+            float[] data = toTensorInput(img, rw, rh, new float[]{0.5f, 0.5f, 0.5f},
+                    new float[]{0.5f, 0.5f, 0.5f});
+            float[][][] out;
+            try (OnnxTensor in = OnnxTensor.createTensor(env, FloatBuffer.wrap(data), new long[]{1, 3, rh, rw});
+                 OrtSession.Result r = rec.run(Collections.singletonMap(recInput, in))) {
+                out = (float[][][]) r.get(0).getValue();
+            }
+            if (out == null || out.length == 0 || out[0] == null) return "";
+            return ctc(out[0]);
+        } finally {
+            img.recycle();
+        }
     }
 
     private Bitmap rotatedCrop(Bitmap src, Box b, int cw, int ch) {
@@ -427,7 +548,8 @@ public class OcrEngine {
         String line;
         while ((line = r.readLine()) != null) list.add(line);
         r.close();
-        list.add(" ");
+        // 字典行数就是模型去掉 blank 之后的类别数，末尾不要再补东西，
+        // 补上去的那一项没有任何输出类别跟它对应
         return list.toArray(new String[0]);
     }
 }
