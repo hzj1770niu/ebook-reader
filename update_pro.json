@@ -1,9 +1,9 @@
 {
  "package": "com.zz.reader.pro",
- "versionCode": 64,
- "versionName": "8.3",
- "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.3/ebook_v8.3.apk",
- "sha256": "5c15b3f217921bbe988f57b9cd3b5c4b77122cdc553db2119f4714042e5035a3",
- "changelog": "8.3\n拍照取景认出字以后，那块字自己就是读屏能摸到的焦点，手指摸过去读的就是那里的文字，不用再点\n对着文字不用点，认出来直接念；同一段话不重复念。设置里新增「拍照识别」，可以关掉自动念\n方向提示压到最短：左一点、右一点、上一点、下一点、近一点、远一点、好了能拍；对准以后不再重复报方向\n加了崩溃记录，万一闪退，下次进拍照识别会念出上次闪退的原因\n解决已知问题\n\n",
- "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.3"
+ "versionCode": 65,
+ "versionName": "8.4",
+ "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.4/ebook_v8.4.apk",
+ "sha256": "a89f3bb11da5afa49289dfc5b7f50579745f442c6036785db5da29607b5bbc97",
+ "changelog": "8.4\n拍完先回到“拍照识别”这一层，面前就是导出 TXT 和清空，能马上存下来\n拍到的照片先记一笔，万一中途被系统收掉，再进来会自动接着认，不会白拍\n退出取景前先把相机彻底停稳，减少关相机那一下的闪退\n拍照识别页提示精简：按钮不再拖一长串说明，状态只说一句\n解决已知问题\n\n",
+ "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.4"
 }
