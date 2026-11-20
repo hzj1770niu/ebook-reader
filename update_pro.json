@@ -1,9 +1,9 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 76,
-  "versionName": "9.5",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v9.5/ebook_v9.5.apk",
-  "sha256": "0281711e48945d13a59b0b1ecd17f8be1f9debc0b6ac9ad1cf8a57f4e37f55c6",
-  "changelog": "9.5：朗读不再一句一顿。以前正文攒够三行或一百二十字就断开，一句话正好压在边界上就被切成两半分开念；现在只在句号、问号、叹号处断句，句子跨行会接起来一起念，短标题仍自己占一块。只改断行位置，字和顺序不动。解决已知问题。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v9.5"
+  "versionCode": 77,
+  "versionName": "9.6",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v9.6/ebook_v9.6.apk",
+  "sha256": "4962b6914994a6cb0aac9a084c1779b9b457bc7a5f79cd205d813499aab7b544",
+  "changelog": "9.6：原版式朗读能连着翻页，这一页念完自动翻下一页接着念，再点一下停止；原版式语速接上阅读设置里的值，跟正文朗读同一速度；原版式里的半句换行也接起来念。解决已知问题。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v9.6"
 }
