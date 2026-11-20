@@ -1,9 +1,9 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 75,
-  "versionName": "9.4",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v9.4/ebook_v9.4.apk",
-  "sha256": "b28b28affef17750d3c271d1ab4ff7e0fc1fda1303fb395e38d1c08d5352c9be",
-  "changelog": "9.4：周刊杂志多栏页的阅读顺序改成按栏读，通栏大块单独成段，其余按纵向分段、段内聚栏、栏从左到右，减少左右来回跳；版面模型给出的重叠框先合并，避免同一段话念两遍。解决已知问题。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v9.4"
+  "versionCode": 76,
+  "versionName": "9.5",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v9.5/ebook_v9.5.apk",
+  "sha256": "0281711e48945d13a59b0b1ecd17f8be1f9debc0b6ac9ad1cf8a57f4e37f55c6",
+  "changelog": "9.5：朗读不再一句一顿。以前正文攒够三行或一百二十字就断开，一句话正好压在边界上就被切成两半分开念；现在只在句号、问号、叹号处断句，句子跨行会接起来一起念，短标题仍自己占一块。只改断行位置，字和顺序不动。解决已知问题。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v9.5"
 }
