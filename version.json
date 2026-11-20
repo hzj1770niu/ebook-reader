@@ -1,9 +1,9 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 73,
-  "versionName": "9.2",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v9.2/ebook_v9.2.apk",
-  "sha256": "f13fc143e12c8854ad6d9b996ca8acad32343669490a0f69075943eed9b2d890",
-  "changelog": "9.2：本地多栏识别改进。版面模型先找区块、剔页眉页脚、再排阅读顺序，两块版面的页也走版面；兜底分栏先切横带再分栏，通栏阈值放宽，减少左栏没读完就跳到右栏。识别设置底部新增「识别自检」，可确认版面模型有没有真的跑。解决已知问题。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v9.2"
+  "versionCode": 74,
+  "versionName": "9.3",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v9.3/ebook_v9.3.apk",
+  "sha256": "376842249b8dc5616af10fcb58ef9594440e8942c148feb839b93ad22061d5f1",
+  "changelog": "9.3：拍照识别先清晰化再认字。自动拉平纸面明暗、加大文字与纸底的深浅差、字偏小自动放大，然后交给识别引擎；拍照识别与相机分区点读两处都生效，识别设置里有开关，默认开。解决已知问题。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v9.3"
 }
