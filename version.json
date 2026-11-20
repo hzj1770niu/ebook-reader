@@ -3,7 +3,7 @@
   "versionCode": 70,
   "versionName": "8.9",
   "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v8.9/ebook_v8.9.apk",
-  "sha256": "b8af6deb138fa1998db7592db9b84546f529b6461845d923a196cfd8f04ef0f8",
-  "changelog": "- 新增「整本云端精解析」（百度文档解析 Unlimited-OCR）：PDF 专用，自动按 300 页 / 20M 切块，实测超 20M 就对半再切。\n- 每块提交后 task_id 落盘，退出或被杀下次进书接着查，已提交的块不重复提交、不重复扣额度。\n- 结果按版面丢页眉页脚页码印章，表格转文本，写进逐页缓存。\n- 识别缓存迁移到应用私有目录，清缓存不再丢结果；缓存写入改原子写。\n- 「重认」弹窗改四个按钮：本地 / 在线 / 整本云端 / 取消。\n- 解决已知问题。",
+  "sha256": "3db29f78fef5e4261c5b05e674f87491ef81519dba1be063b47160a38beab883",
+  "changelog": "- 新增「整本云端精解析」（百度文档解析 Unlimited-OCR）：PDF 专用，自动按 300 页 / 20M 切块，实测超 20M 就对半再切。\n- 每块提交后 task_id 落盘，退出或被杀下次进书接着查，已提交的块不重复提交、不重复扣额度；某块失败下次会重新提交（失败那一次百度不收费）。\n- 结果按版面丢页眉页脚页码印章，表格转文本，写进逐页缓存。\n- 识别缓存迁移到应用私有目录，清缓存不再丢结果；缓存写入改原子写。\n- 「重认」弹窗改四个按钮：本地 / 在线 / 整本云端 / 取消。\n- 解决已知问题。",
   "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v8.9"
 }
