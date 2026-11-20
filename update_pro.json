@@ -1,9 +1,9 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 71,
-  "versionName": "9.0",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v9.0/ebook_v9.0.apk",
-  "sha256": "e18b07f17c06d11f31875907f3cc0ba3bc83b8fbc9941633f50dca9ab7124bd8",
-  "changelog": "- 识别设置收成一个二级菜单：本地（文字层校对）、在线（Key、精度、含位置、整本走在线、额度校准）、云端说明、拍照，全部在这里。\n- 每页重复的水印改常开过滤，去掉开关。\n- 阅读设置新增「整本云端精解析（PDF）」按钮，阅读页「重认」里也有这一项。\n- 解决已知问题。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v9.0"
+  "versionCode": 72,
+  "versionName": "9.1",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v9.1/ebook_v9.1.apk",
+  "sha256": "25e95b8c5794273f21c0ffc320e3834241588bd7736316c321a4b1831593d904",
+  "changelog": "- 修原版式看 PDF 翻不了页：双指横滑判定按单帧位移算，永远够不到阈值；现在按整次手势总位移算，双指能翻，没放大时单指横滑也能翻。\n- 原版式翻页后焦点自动落到正文开头，读屏接着念。\n- 原版式加「朗读」按钮；隐藏工具栏后，读屏操作菜单里有朗读、下一页、上一页。\n- 原版式看 EPUB/Kindle 那层同样加朗读与操作菜单动作，翻页后焦点落回正文。\n- 进原版式不再二次确认，点一下直接进。\n- 解决已知问题。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v9.1"
 }
