@@ -1,9 +1,9 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 78,
-  "versionName": "9.7",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v9.7/ebook_v9.7.apk",
-  "sha256": "4b9669fd7a3055998d698247b225a9a9a7c1b8206c518850c71b1f398c5f3649",
-  "changelog": "9.7：在线识别新增一种用法——认字交给百度，分栏仍用本机。开启后百度只给每行的位置和文字，合行、区块、按栏排序、接句全走本地那套，多栏页读法和本地一致。默认关，开了强制含位置版。解决已知问题。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v9.7"
+  "versionCode": 79,
+  "versionName": "9.8",
+  "apkUrl": "https://aka.doubaocdn.com/s/xV2mJcFq6U",
+  "sha256": "3386ced74884e7a01c3b205d8891220fab5a26e3a295df466f62cd88ac8e44c9",
+  "changelog": "9.8：PDF 书新增「导 EPUB」，把整本导成带插图的 EPUB。文字按识别出来的阅读顺序排（通栏块、按栏左右、栏内上下），页上插图裁下来插到对应段落后面，不会插进一句话中间。每页一章，段落按句号收句。导出时显示已认完几页，可中途取消。解决已知问题。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases"
 }
