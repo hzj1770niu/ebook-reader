@@ -1,9 +1,9 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 77,
-  "versionName": "9.6",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v9.6/ebook_v9.6.apk",
-  "sha256": "4962b6914994a6cb0aac9a084c1779b9b457bc7a5f79cd205d813499aab7b544",
-  "changelog": "9.6：原版式朗读能连着翻页，这一页念完自动翻下一页接着念，再点一下停止；原版式语速接上阅读设置里的值，跟正文朗读同一速度；原版式里的半句换行也接起来念。解决已知问题。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v9.6"
+  "versionCode": 78,
+  "versionName": "9.7",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v9.7/ebook_v9.7.apk",
+  "sha256": "4b9669fd7a3055998d698247b225a9a9a7c1b8206c518850c71b1f398c5f3649",
+  "changelog": "9.7：在线识别新增一种用法——认字交给百度，分栏仍用本机。开启后百度只给每行的位置和文字，合行、区块、按栏排序、接句全走本地那套，多栏页读法和本地一致。默认关，开了强制含位置版。解决已知问题。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v9.7"
 }
