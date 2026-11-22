@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 85,
-  "versionName": "10.4",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.4/ebook_v10.4.apk",
-  "sha256": "dae24fb24da8963512a8e22685ef50767f2a32a60fadc71d9d3e322236c019f0",
-  "changelog": "10.4：导出 EPUB 增加单页结果缓存，同一本书再次导出时直接读取缓存，不再渲染页面、不再运行检测与版面模型、不再逐行识别，导出时间与耗电大幅下降；从未识别出文字的页面写入空页标记，不再每次打开重复识别；重新识别整本书时一并清除导出缓存；通知栏进度改为每五页刷新一次。解决已知问题。",
+  "versionCode": 87,
+  "versionName": "10.6",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.6/ebook_v10.6.apk",
+  "sha256": "3583c6eb88eff9b7c9504fa1f9a05fd8a840f1010474635f1d850df6bbf5c00a",
+  "changelog": "10.6：在线识别配置可导出为 JSON 文件并导入，含 API Key、Secret Key 与在线识别开关，不含本月用量与额度状态；导入时校验文件来源与完整性。解决已知问题。",
   "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases",
-  "size": 197310794
+  "size": 197314142
 }
