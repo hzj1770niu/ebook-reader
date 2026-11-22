@@ -1,9 +1,9 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 81,
-  "versionName": "10.0",
-  "apkUrl": "https://aka.doubaocdn.com/s/sbRiJuz6cz",
-  "sha256": "c2a42ad496e7363b095846283c38db0fc5361b65cbdd3b16c07f3c59e7f882ad",
-  "changelog": "10.0：导 EPUB 改成前台服务加唤醒锁，锁屏、切走都继续识别，不再锁屏就停；通知栏显示已认完多少页，可从通知取消；离开阅读界面导出也不中断。解决已知问题。",
+  "versionCode": 82,
+  "versionName": "10.1",
+  "apkUrl": "https://aka.doubaocdn.com/s/6INo5CKHOw",
+  "sha256": "9bcb37d64bcb9601b6837c05a1d5b91e4b4747a84386f04b1a1b20cb29368afc",
+  "changelog": "10.1：全部界面提示语统一成规范说法，口语化的「正在认多少页」「好了说一声」「那个勾」「认字」等一律改掉；导 EPUB 的说明、按钮名、进度和通知文字同步规范；错误提示统一用「失败」「中断」「不可用」。解决已知问题。",
   "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases"
 }
