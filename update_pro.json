@@ -1,9 +1,9 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 79,
-  "versionName": "9.8",
-  "apkUrl": "https://aka.doubaocdn.com/s/xV2mJcFq6U",
-  "sha256": "3386ced74884e7a01c3b205d8891220fab5a26e3a295df466f62cd88ac8e44c9",
-  "changelog": "9.8：PDF 书新增「导 EPUB」，把整本导成带插图的 EPUB。文字按识别出来的阅读顺序排（通栏块、按栏左右、栏内上下），页上插图裁下来插到对应段落后面，不会插进一句话中间。每页一章，段落按句号收句。导出时显示已认完几页，可中途取消。解决已知问题。",
+  "versionCode": 80,
+  "versionName": "9.9",
+  "apkUrl": "https://aka.doubaocdn.com/s/11WFp57x9k",
+  "sha256": "3e33a249fd1e8f30cd4dafafb8711160b4f66fd403f74d67526d63a8e76bc7de",
+  "changelog": "9.9：修「导 EPUB」看着像卡死——进度以前要攒五页才刷新，现在每页刷新并显示第几页、已用时间，每十页语音报一次；新增「快导」用手机版小模型快好几倍；单页认错跳过不停整本；完成时报页数、图数和用时。解决已知问题。",
   "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases"
 }
