@@ -1,9 +1,9 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 83,
-  "versionName": "10.2",
-  "apkUrl": "https://aka.doubaocdn.com/s/YHJIp0HCsT",
-  "sha256": "388881f93bd10426268009e6358cb61dd5ea29c3362bc985a08b3ce85d97f018",
-  "changelog": "10.2：导出 EPUB 结束时给出确认，应用内弹出「导出完成」并带「确定」按钮，不点会一直保留；后台完成时通知栏发出「导出结果」通知，带「确定」动作，不再被静默划过。导出结论逐页点名跳过页与未识别出文字的页；修复整页渲染失败页面静默消失、EPUB 页数与 PDF 不符而不报的问题。解决已知问题。",
+  "versionCode": 84,
+  "versionName": "10.3",
+  "apkUrl": "https://aka.doubaocdn.com/s/o6aMtiaHVR",
+  "sha256": "b8f37d82a39cf13b1fe6a14467066775a23e336e2ff62554d447941e36ad5149",
+  "changelog": "10.3：主界面按钮文案规范化，「从手机里选择一本电子书打开」改为「选择本机电子书文件」，「拍照识别成文字」改为「拍照识别文字」；阅读页工具栏统一为「重新识别」「导出 TXT」「导出 EPUB」「原版式」，与弹窗选项一致；拍照识别提示改为固定表述，方向提示统一为「向左」「向右」「向上」「向下」「靠近」「远离」「可以拍摄」。解决已知问题。",
   "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases"
 }
