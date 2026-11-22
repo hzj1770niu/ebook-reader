@@ -1,9 +1,9 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 80,
-  "versionName": "9.9",
-  "apkUrl": "https://aka.doubaocdn.com/s/11WFp57x9k",
-  "sha256": "3e33a249fd1e8f30cd4dafafb8711160b4f66fd403f74d67526d63a8e76bc7de",
-  "changelog": "9.9：修「导 EPUB」看着像卡死——进度以前要攒五页才刷新，现在每页刷新并显示第几页、已用时间，每十页语音报一次；新增「快导」用手机版小模型快好几倍；单页认错跳过不停整本；完成时报页数、图数和用时。解决已知问题。",
+  "versionCode": 81,
+  "versionName": "10.0",
+  "apkUrl": "https://aka.doubaocdn.com/s/sbRiJuz6cz",
+  "sha256": "c2a42ad496e7363b095846283c38db0fc5361b65cbdd3b16c07f3c59e7f882ad",
+  "changelog": "10.0：导 EPUB 改成前台服务加唤醒锁，锁屏、切走都继续识别，不再锁屏就停；通知栏显示已认完多少页，可从通知取消；离开阅读界面导出也不中断。解决已知问题。",
   "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases"
 }
