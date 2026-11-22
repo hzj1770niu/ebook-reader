@@ -1,9 +1,9 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 82,
-  "versionName": "10.1",
-  "apkUrl": "https://aka.doubaocdn.com/s/6INo5CKHOw",
-  "sha256": "9bcb37d64bcb9601b6837c05a1d5b91e4b4747a84386f04b1a1b20cb29368afc",
-  "changelog": "10.1：全部界面提示语统一成规范说法，口语化的「正在认多少页」「好了说一声」「那个勾」「认字」等一律改掉；导 EPUB 的说明、按钮名、进度和通知文字同步规范；错误提示统一用「失败」「中断」「不可用」。解决已知问题。",
+  "versionCode": 83,
+  "versionName": "10.2",
+  "apkUrl": "https://aka.doubaocdn.com/s/YHJIp0HCsT",
+  "sha256": "388881f93bd10426268009e6358cb61dd5ea29c3362bc985a08b3ce85d97f018",
+  "changelog": "10.2：导出 EPUB 结束时给出确认，应用内弹出「导出完成」并带「确定」按钮，不点会一直保留；后台完成时通知栏发出「导出结果」通知，带「确定」动作，不再被静默划过。导出结论逐页点名跳过页与未识别出文字的页；修复整页渲染失败页面静默消失、EPUB 页数与 PDF 不符而不报的问题。解决已知问题。",
   "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases"
 }
