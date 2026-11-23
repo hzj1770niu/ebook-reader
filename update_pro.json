@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 108,
-  "versionName": "10.27",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.27/ebook_v10.27.apk",
-  "sha256": "99cff53f2239741502edad3e742c4bc5bbb780cebdfd327acad875640a7ac8fe",
-  "changelog": "新增问题反馈入口：点击后打开系统邮件应用，收件人、主题与设备信息已预填，补充问题描述后即可发送。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.27",
-  "size": 197330835
+  "versionCode": 109,
+  "versionName": "10.28",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.28/ebook_v10.28.apk",
+  "sha256": "fd1b7e1d5196a98333b1f9789eb897534ef7aa7b81207974aca4831730a22e32",
+  "changelog": "选区笔记终点可在任意段落直接选用，无需翻页刷新；段落笔记与选区笔记的删除互不影响。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.28",
+  "size": 197331034
 }
