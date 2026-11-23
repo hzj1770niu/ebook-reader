@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 88,
-  "versionName": "10.7",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.7/ebook_v10.7.apk",
-  "sha256": "e6b40fe02f32968bac2160d9ad38787c3924cfa294b0bdbfe998d1f600453ad3",
-  "changelog": "10.7：修复开始导出时在主线程初始化识别引擎导致的卡顿，改在后台线程加载模型；导出任务登记不再等待页数计算。解决已知问题。",
+  "versionCode": 89,
+  "versionName": "10.8",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.8/ebook_v10.8.apk",
+  "sha256": "60f86007948fbe0e132f624e408725679290143ea4bf4926bdf39c9be9df0066",
+  "changelog": "10.8：未完成导出任务的提示增加「重新开始」一项，可清除该书导出缓存后从头识别；「继续导出」沿用缓存，「删除记录」只清记录。解决已知问题。",
   "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases",
-  "size": 197314084
+  "size": 197314274
 }
