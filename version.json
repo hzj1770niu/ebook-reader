@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 93,
-  "versionName": "10.12",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.12/ebook_v10.12.apk",
-  "sha256": "a94afb36055b67e7aac351b4b9f44a040e54068c5bc9e4bafd856a70fd6c45b0",
-  "changelog": "修复拍照识别打开后闪退；相机页自行确认应用上下文；失败提示附带异常信息。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.12",
-  "size": 197315888
+  "versionCode": 94,
+  "versionName": "10.13",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.13/ebook_v10.13.apk",
+  "sha256": "0e62b19f96159436bc5d9abc0f9a0066275fc2929037fe81c50346f5c71b5350",
+  "changelog": "修复对准后误报“未检测到文字”、必须点拍摄才能识别的问题：取景检测帧提高到 1280 宽，小字不再因缩图丢失；对准并稳定后自动朗读。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.13",
+  "size": 197315829
 }
