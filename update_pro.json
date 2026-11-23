@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 95,
-  "versionName": "10.14",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.14/ebook_v10.14.apk",
-  "sha256": "09b9516ac01119ee57d09073526d90a90cef88f91d240eda2986783add8d5736",
-  "changelog": "取景与拍照改用同一幅图：取景分辨率提高到 1920×1440 以内最大一档，检测不做缩放；检测节奏按耗时自适应。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.14",
-  "size": 197315776
+  "versionCode": 96,
+  "versionName": "10.15",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.15/ebook_v10.15.apk",
+  "sha256": "604f4ad5d73c6a9e8fa88a65ab8a762fe59efe9ceb81c7c2d829fad6b4ce687d",
+  "changelog": "拍照页新增手电筒开关，取景中可随时开关补光；无闪光灯机型上按钮置灰并说明。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.15",
+  "size": 197316683
 }
