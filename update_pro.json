@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 100,
-  "versionName": "10.19",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.19/ebook_v10.19.apk",
-  "sha256": "da2f871b319d613c80400435c31bd5e0c695c07a86d5857c523104b3306c8735",
-  "changelog": "拍照改为静态拍照通道取原图，不再用取景缩图存盘；相片解码默认保留原图分辨率。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.19",
-  "size": 197318836
+  "versionCode": 101,
+  "versionName": "10.20",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.20/ebook_v10.20.apk",
+  "sha256": "6142f7accd47975276979a1f758474147db357552be29a9f408570540757a074",
+  "changelog": "重认菜单在线项改为本页云端高精度（按页扣额度）；拍照识别页新增本页云端高精度识别。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.20",
+  "size": 197319581
 }
