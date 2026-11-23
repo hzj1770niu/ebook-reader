@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 90,
-  "versionName": "10.9",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.9/ebook_v10.9.apk",
-  "sha256": "bc07056741bdbc55e4279d5c56e6a8dc828b2e92bc9d825b2efa0c6a4ca9128f",
-  "changelog": "提示语规范化：导出续接弹框、配置导入导出说明、版面分析与整本识别说明、TXT 编码提示统一改为规范书面语。识别与导出逻辑未改动。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.9",
-  "size": 197314321
+  "versionCode": 91,
+  "versionName": "10.10",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.10/ebook_v10.10.apk",
+  "sha256": "727bb15569bb887ce6af2268f81af5f81e82a83310c379b21b97a9f448a9e130",
+  "changelog": "拍照识别方向提示消除抖动：多帧中值平滑、连续三帧确认、宽进窄出回差、语音冷却；静止时不再反复播报左右与远近。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.10",
+  "size": 197315038
 }
