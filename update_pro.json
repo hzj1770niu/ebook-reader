@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 99,
-  "versionName": "10.18",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.18/ebook_v10.18.apk",
-  "sha256": "93109c19a14e19d0f8969953006af60b2b34cd817c83610bb63d27472d444509",
-  "changelog": "修复长截图识别报“未检测到文字”：检测改为按纵向切块，长图不再被整幅缩到 1600；图片解码按总像素限幅，保留原生分辨率；超大图跳过图像增强以控制内存。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.18",
-  "size": 197317512
+  "versionCode": 100,
+  "versionName": "10.19",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.19/ebook_v10.19.apk",
+  "sha256": "da2f871b319d613c80400435c31bd5e0c695c07a86d5857c523104b3306c8735",
+  "changelog": "拍照改为静态拍照通道取原图，不再用取景缩图存盘；相片解码默认保留原图分辨率。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.19",
+  "size": 197318836
 }
