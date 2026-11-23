@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 98,
-  "versionName": "10.17",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.17/ebook_v10.17.apk",
-  "sha256": "44c8e4b6444cc0b95387e6b7d084c3e4e8122884e341ac324d66478972935c88",
-  "changelog": "拍照识别结果恢复为整页合并的一个焦点；识别完成后立即通过无障碍通道自动朗读该页，长文按句切块连续播报。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.17",
-  "size": 197317120
+  "versionCode": 99,
+  "versionName": "10.18",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.18/ebook_v10.18.apk",
+  "sha256": "93109c19a14e19d0f8969953006af60b2b34cd817c83610bb63d27472d444509",
+  "changelog": "修复长截图识别报“未检测到文字”：检测改为按纵向切块，长图不再被整幅缩到 1600；图片解码按总像素限幅，保留原生分辨率；超大图跳过图像增强以控制内存。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.18",
+  "size": 197317512
 }
