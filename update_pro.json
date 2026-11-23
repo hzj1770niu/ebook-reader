@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 101,
-  "versionName": "10.20",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.20/ebook_v10.20.apk",
-  "sha256": "3749b9be129db723cb20f5558a9c65aa0a2c3628b32d1e4ea72e8023203a88c5",
-  "changelog": "重认菜单在线项改为本页云端高精度（按页扣额度）；拍照识别页新增本页云端高精度识别。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.20",
-  "size": 197319602
+  "versionCode": 102,
+  "versionName": "10.21",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.21/ebook_v10.21.apk",
+  "sha256": "4afbc69850996f8f7e5d492e30fd8b6e11f32ef0efcee8db79e59813ae92903d",
+  "changelog": "长图云端识别按高度分段上传，逐段报进度，网络异常给出明确提示。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.21",
+  "size": 197320271
 }
