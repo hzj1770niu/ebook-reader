@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 102,
-  "versionName": "10.21",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.21/ebook_v10.21.apk",
-  "sha256": "4afbc69850996f8f7e5d492e30fd8b6e11f32ef0efcee8db79e59813ae92903d",
-  "changelog": "长图云端识别按高度分段上传，逐段报进度，网络异常给出明确提示。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.21",
-  "size": 197320271
+  "versionCode": 103,
+  "versionName": "10.22",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.22/ebook_v10.22.apk",
+  "sha256": "d3d89ebebb861e5cdf0f13d215b41c9ffcf67ed658fb1561d42984e629ce2d3f",
+  "changelog": "本地与云端识别逐段逐行报进度，同宽行合批识别提速，长图跳过分栏模型。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.22",
+  "size": 197322393
 }
