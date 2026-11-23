@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 105,
-  "versionName": "10.24",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.24/ebook_v10.24.apk",
-  "sha256": "b32a3b3d8a2930273a21f3873d562ab437e774f060982a81f57c476ce45ab8fd",
-  "changelog": "规范化若干界面提示语。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.24",
-  "size": 197323257
+  "versionCode": 106,
+  "versionName": "10.25",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.25/ebook_v10.25.apk",
+  "sha256": "6cdeca1260decdcef80991e331c7db89f17a0753014c73e1b23b7cce4d32d769",
+  "changelog": "新增段落标记与笔记，读屏操作菜单与长按均可操作，底部栏新增笔记入口。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.25",
+  "size": 197326778
 }
