@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 91,
-  "versionName": "10.10",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.10/ebook_v10.10.apk",
-  "sha256": "727bb15569bb887ce6af2268f81af5f81e82a83310c379b21b97a9f448a9e130",
-  "changelog": "拍照识别方向提示消除抖动：多帧中值平滑、连续三帧确认、宽进窄出回差、语音冷却；静止时不再反复播报左右与远近。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.10",
-  "size": 197315038
+  "versionCode": 92,
+  "versionName": "10.11",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.11/ebook_v10.11.apk",
+  "sha256": "26abea30cc23f8ea7816c766d2869fed519ebed61211627ffc01fd2efa9c0d3f",
+  "changelog": "修复拍照识别提示“识别引擎尚未就绪”后无方向提示的问题：识别引擎改为打开取景时后台加载一次，失败最多重试三次并显示失败类型，不再逐帧重建；加载中与失败状态分别提示。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.11",
+  "size": 197315679
 }
