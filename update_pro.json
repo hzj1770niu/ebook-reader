@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 96,
-  "versionName": "10.15",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.15/ebook_v10.15.apk",
-  "sha256": "604f4ad5d73c6a9e8fa88a65ab8a762fe59efe9ceb81c7c2d829fad6b4ce687d",
-  "changelog": "拍照页新增手电筒开关，取景中可随时开关补光；无闪光灯机型上按钮置灰并说明。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.15",
-  "size": 197316683
+  "versionCode": 97,
+  "versionName": "10.16",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.16/ebook_v10.16.apk",
+  "sha256": "b3991870c9c915d987984e2e0d41dc67c0bb3912742ff4006fe6ff2fdfac9a6e",
+  "changelog": "拍照识别结果按页、按行铺成独立可聚焦文字块，读屏可逐行浏览；换页播报页号与行数，识别完成定位到该页开头。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.16",
+  "size": 197316993
 }
