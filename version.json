@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 92,
-  "versionName": "10.11",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.11/ebook_v10.11.apk",
-  "sha256": "26abea30cc23f8ea7816c766d2869fed519ebed61211627ffc01fd2efa9c0d3f",
-  "changelog": "修复拍照识别提示“识别引擎尚未就绪”后无方向提示的问题：识别引擎改为打开取景时后台加载一次，失败最多重试三次并显示失败类型，不再逐帧重建；加载中与失败状态分别提示。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.11",
-  "size": 197315679
+  "versionCode": 93,
+  "versionName": "10.12",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.12/ebook_v10.12.apk",
+  "sha256": "a94afb36055b67e7aac351b4b9f44a040e54068c5bc9e4bafd856a70fd6c45b0",
+  "changelog": "修复拍照识别打开后闪退；相机页自行确认应用上下文；失败提示附带异常信息。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.12",
+  "size": 197315888
 }
