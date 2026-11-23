@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 106,
-  "versionName": "10.25",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.25/ebook_v10.25.apk",
-  "sha256": "6cdeca1260decdcef80991e331c7db89f17a0753014c73e1b23b7cce4d32d769",
-  "changelog": "新增段落标记与笔记，读屏操作菜单与长按均可操作，底部栏新增笔记入口。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.25",
-  "size": 197326778
+  "versionCode": 107,
+  "versionName": "10.26",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.26/ebook_v10.26.apk",
+  "sha256": "22c0128d023040c3f778f137cd2659e15f4a36d89a28b1558fca4062a057dd62",
+  "changelog": "新增选区笔记：可从句中选起点，跨越多段后在任意句结束，终点无需到达段落末尾；保存前播报页数、段数与句数。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.26",
+  "size": 197329962
 }
