@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 94,
-  "versionName": "10.13",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.13/ebook_v10.13.apk",
-  "sha256": "0e62b19f96159436bc5d9abc0f9a0066275fc2929037fe81c50346f5c71b5350",
-  "changelog": "修复对准后误报“未检测到文字”、必须点拍摄才能识别的问题：取景检测帧提高到 1280 宽，小字不再因缩图丢失；对准并稳定后自动朗读。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.13",
-  "size": 197315829
+  "versionCode": 95,
+  "versionName": "10.14",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.14/ebook_v10.14.apk",
+  "sha256": "09b9516ac01119ee57d09073526d90a90cef88f91d240eda2986783add8d5736",
+  "changelog": "取景与拍照改用同一幅图：取景分辨率提高到 1920×1440 以内最大一档，检测不做缩放；检测节奏按耗时自适应。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.14",
+  "size": 197315776
 }
