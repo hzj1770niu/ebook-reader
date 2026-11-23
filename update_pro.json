@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 89,
-  "versionName": "10.8",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.8/ebook_v10.8.apk",
-  "sha256": "60f86007948fbe0e132f624e408725679290143ea4bf4926bdf39c9be9df0066",
-  "changelog": "10.8：未完成导出任务的提示增加「重新开始」一项，可清除该书导出缓存后从头识别；「继续导出」沿用缓存，「删除记录」只清记录。解决已知问题。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases",
-  "size": 197314274
+  "versionCode": 90,
+  "versionName": "10.9",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.9/ebook_v10.9.apk",
+  "sha256": "bc07056741bdbc55e4279d5c56e6a8dc828b2e92bc9d825b2efa0c6a4ca9128f",
+  "changelog": "提示语规范化：导出续接弹框、配置导入导出说明、版面分析与整本识别说明、TXT 编码提示统一改为规范书面语。识别与导出逻辑未改动。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.9",
+  "size": 197314321
 }
