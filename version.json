@@ -3,8 +3,8 @@
   "versionCode": 101,
   "versionName": "10.20",
   "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.20/ebook_v10.20.apk",
-  "sha256": "6142f7accd47975276979a1f758474147db357552be29a9f408570540757a074",
+  "sha256": "3749b9be129db723cb20f5558a9c65aa0a2c3628b32d1e4ea72e8023203a88c5",
   "changelog": "重认菜单在线项改为本页云端高精度（按页扣额度）；拍照识别页新增本页云端高精度识别。",
   "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.20",
-  "size": 197319581
+  "size": 197319602
 }
