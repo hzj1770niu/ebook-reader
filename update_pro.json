@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 104,
-  "versionName": "10.23",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.23/ebook_v10.23.apk",
-  "sha256": "79a1715c76433997d7a968132922ae0e1686916820a40077b1e79f51650476b1",
-  "changelog": "拍照识别页新增本页文档解析入口，按页扣额度。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.23",
-  "size": 197323199
+  "versionCode": 105,
+  "versionName": "10.24",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.24/ebook_v10.24.apk",
+  "sha256": "b32a3b3d8a2930273a21f3873d562ab437e774f060982a81f57c476ce45ab8fd",
+  "changelog": "规范化若干界面提示语。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.24",
+  "size": 197323257
 }
