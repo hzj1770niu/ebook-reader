@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 87,
-  "versionName": "10.6",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.6/ebook_v10.6.apk",
-  "sha256": "3583c6eb88eff9b7c9504fa1f9a05fd8a840f1010474635f1d850df6bbf5c00a",
-  "changelog": "10.6：在线识别配置可导出为 JSON 文件并导入，含 API Key、Secret Key 与在线识别开关，不含本月用量与额度状态；导入时校验文件来源与完整性。解决已知问题。",
+  "versionCode": 88,
+  "versionName": "10.7",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.7/ebook_v10.7.apk",
+  "sha256": "e6b40fe02f32968bac2160d9ad38787c3924cfa294b0bdbfe998d1f600453ad3",
+  "changelog": "10.7：修复开始导出时在主线程初始化识别引擎导致的卡顿，改在后台线程加载模型；导出任务登记不再等待页数计算。解决已知问题。",
   "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases",
-  "size": 197314142
+  "size": 197314084
 }
