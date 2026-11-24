@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 110,
-  "versionName": "10.29",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.29/ebook_v10.29.apk",
-  "sha256": "6087bb4ef25b496ac51016fe3ebb3e9ab7c58482a937f4d8bc2efacf657af2bc",
-  "changelog": "新增配置备份与还原；TXT 长章节标题可识别；搜索每段最多三处、上限 500 条；PDF 书签层级放宽至五级；EPUB 锚点级目录按条目命名；选区起点本机保存。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.29",
-  "size": 197333567
+  "versionCode": 111,
+  "versionName": "10.30",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.30/ebook_v10.30.apk",
+  "sha256": "e42c4d657074109bafacbecda88249a482bb961910ff837a778ef409c0715a11",
+  "changelog": "SMB 地址可只填机器地址，进入后列出该机全部共享；用户名与密码可不填按匿名访问，微软账户邮箱自动按 MicrosoftAccount 域尝试。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.30",
+  "size": 197335217
 }
