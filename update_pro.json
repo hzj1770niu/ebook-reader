@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 111,
-  "versionName": "10.30",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.30/ebook_v10.30.apk",
-  "sha256": "e42c4d657074109bafacbecda88249a482bb961910ff837a778ef409c0715a11",
-  "changelog": "SMB 地址可只填机器地址，进入后列出该机全部共享；用户名与密码可不填按匿名访问，微软账户邮箱自动按 MicrosoftAccount 域尝试。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.30",
-  "size": 197335217
+  "versionCode": 112,
+  "versionName": "10.31",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.31/ebook_v10.31.apk",
+  "sha256": "03655ed7ee0f0848cc9b4a728437df48c3b36c54648c7a3c4c77b3fdd7fc84ef",
+  "changelog": "新增 MHT（MHTML）单文件网页格式支持；新增 DAISY 文本电子书格式支持。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.31",
+  "size": 197337837
 }
