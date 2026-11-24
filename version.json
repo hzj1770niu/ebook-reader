@@ -1,10 +1,10 @@
 {
   "package": "com.zz.reader.pro",
-  "versionCode": 109,
-  "versionName": "10.28",
-  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.28/ebook_v10.28.apk",
-  "sha256": "fd1b7e1d5196a98333b1f9789eb897534ef7aa7b81207974aca4831730a22e32",
-  "changelog": "选区笔记终点可在任意段落直接选用，无需翻页刷新；段落笔记与选区笔记的删除互不影响。",
-  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.28",
-  "size": 197331034
+  "versionCode": 110,
+  "versionName": "10.29",
+  "apkUrl": "https://github.com/hzj1770niu/ebook-reader/releases/download/v10.29/ebook_v10.29.apk",
+  "sha256": "6087bb4ef25b496ac51016fe3ebb3e9ab7c58482a937f4d8bc2efacf657af2bc",
+  "changelog": "新增配置备份与还原；TXT 长章节标题可识别；搜索每段最多三处、上限 500 条；PDF 书签层级放宽至五级；EPUB 锚点级目录按条目命名；选区起点本机保存。",
+  "releasePage": "https://github.com/hzj1770niu/ebook-reader/releases/tag/v10.29",
+  "size": 197333567
 }
